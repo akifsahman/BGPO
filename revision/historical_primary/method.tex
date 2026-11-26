@@ -1,0 +1,101 @@
+\section{Proposed Framework}\label{sec:3}
+
+BGPO separates the production of synthetic minority candidates from the decision about which candidates enter the training set. The evaluated boundary rule is seeded and stochastic: it uses local class composition around a candidate and then samples candidate indices according to the resulting weights.
+
+\subsection{Composite Candidate Pool}
+
+Let \(D_{\mathrm{train}}=\{(x_i,y_i)\}_{i=1}^{n}\), where \(y_i=1\) denotes the minority class and \(y_i=0\) the majority class. Their training counts are \(n_{\min}\) and \(n_{\mathrm{maj}}\). At augmentation rate \(r\), the required final number of synthetic minority observations is
+\begin{equation}\label{eq:1}
+N_{\mathrm{new}}=\operatorname{round}\!\left((n_{\mathrm{maj}}-n_{\min})r\right).
+\end{equation}
+All reported experiments use \(r=1\). Each of four generators is requested to produce \(N_{\mathrm{new}}\) candidates:
+\begin{equation}\label{eq:2}
+\mathcal{G}=\{\mathrm{SMOTE},\mathrm{ADASYN},\mathrm{MWMOTE},\mathrm{G\mbox{-}SMOTE}\}.
+\end{equation}
+SMOTE interpolates between minority neighbors, ADASYN concentrates generation around difficult minority observations, MWMOTE weights informative minority observations, and G-SMOTE samples within a geometric region. The four-generator set supplies different candidate mechanisms; it is not assumed to be an optimal mixture. The ordered candidate pool is
+\begin{equation}\label{eq:3}
+P=S^{(\mathrm{SMOTE})}\Vert S^{(\mathrm{ADASYN})}\Vert
+S^{(\mathrm{MWMOTE})}\Vert S^{(\mathrm{G\mbox{-}SMOTE})}
+=(z_1,\ldots,z_M).
+\end{equation}
+The pool is indexed: equal coordinates generated twice occupy two positions. When all four generators meet their requests, \(M=4N_{\mathrm{new}}\). A short or failed generator output is recorded. Selection is attempted only if \(M\geq N_{\mathrm{new}}\); no short pool is silently filled from a different generator.
+
+\subsection{Four Fixed-Pool Selection Rules}
+
+All rules receive the same indexed \(P\) and target \(N_{\mathrm{new}}\). The original training observations alone define class neighborhoods; neither the test fold nor any selected synthetic candidate contributes to these neighborhoods.
+
+\textbf{Random selection (RND).} A seeded uniform draw of \(N_{\mathrm{new}}\) different pool indices provides a reference:
+\begin{equation}\label{eq:4}
+I_{\mathrm{RND}}\sim\operatorname{UniformSubsets}
+\bigl(\{1,\ldots,M\},N_{\mathrm{new}};\mathrm{seed}=42\bigr).
+\end{equation}
+
+\textbf{Diversity selection (DIV).} Seeded \(k\)-means partitions \(P\) into \(K\) clusters,
+\begin{equation}\label{eq:5}
+P=C_1\cup\cdots\cup C_K,\qquad C_c\cap C_{c'}=\varnothing
+\quad(c\ne c').
+\end{equation}
+The executed notebook gives every cluster a base quota \(\lfloor N_{\mathrm{new}}/K\rfloor\); the \(N_{\mathrm{new}}\bmod K\) extra places go to the largest clusters, with the notebook's descending cluster-size and label ordering. A cluster cannot contribute more distinct indices than its size:
+\begin{equation}\label{eq:6}
+q_c=\min\left\{|C_c|,\left\lfloor\frac{N_{\mathrm{new}}}{K}\right\rfloor+
+\mathbf{1}\{c\text{ receives an extra place}\}\right\}.
+\end{equation}
+Within each cluster, the rule draws \(q_c\) indices uniformly with the recorded seed. If small or empty clusters leave a shortfall, the notebook draws the remaining positions uniformly from the entire pool, with replacement. This exceptional fill can repeat an index. DIV is thus a cluster-allocation comparator, rather than a deterministic farthest-first rule.
+
+\textbf{Density selection (DEN).} With \(k_{\min}=\min(5,n_{\min}-1)\), calculate the mean distance \(\bar d_{\min}(z_i)\) to the nearest original minority observations. With \(k_{\mathrm{all}}=\min(5,n-1)\), let \(a_{\mathrm{maj}}(z_i)\) be the majority fraction among the nearest observations of the original full training fold. The notebook score is
+\begin{equation}\label{eq:7}
+s_{\mathrm{DEN}}(z_i)=
+\frac{1}{\bar d_{\min}(z_i)+\varepsilon}\,
+\frac{1}{a_{\mathrm{maj}}(z_i)+\varepsilon},
+\qquad \varepsilon=10^{-9}.
+\end{equation}
+Scores are shifted to positive weights \(w_i=s_{\mathrm{DEN}}(z_i)-\min_j s_{\mathrm{DEN}}(z_j)+\varepsilon\). The method samples \(N_{\mathrm{new}}\) indices without replacement with \texttt{RandomState(42)}; at each draw the remaining indices have probabilities proportional to their weights:
+\begin{equation}\label{eq:8}
+\Pr(i\mid A)=\frac{w_i}{\sum_{j\in A}w_j},
+\qquad i\in A,
+\end{equation}
+where \(A\) denotes the currently available indices. This is a stochastic minority-support rule, not pool-only inverse-distance ranking.
+
+\textbf{Boundary selection (BND).} For each \(z_i\), find its \(k_{\mathrm{BND}}=\min(10,n-1)\) nearest original training observations, pooled over the two classes. Let
+\begin{equation}\label{eq:9}
+p_{\min}(z_i)=\frac{1}{k_{\mathrm{BND}}}
+\sum_{j\in\mathcal{N}_{k_{\mathrm{BND}}}(z_i;D_{\mathrm{train}})}
+\mathbf{1}\{y_j=1\},
+\end{equation}
+\begin{equation}\label{eq:10}
+p_{\mathrm{maj}}(z_i)=\frac{1}{k_{\mathrm{BND}}}
+\sum_{j\in\mathcal{N}_{k_{\mathrm{BND}}}(z_i;D_{\mathrm{train}})}
+\mathbf{1}\{y_j=0\}.
+\end{equation}
+The boundary-composition score is highest when both classes occur in similar proportions in the local original-training neighborhood:
+\begin{equation}\label{eq:11}
+q(z_i)=\max\{1-|p_{\min}(z_i)-p_{\mathrm{maj}}(z_i)|,\varepsilon\}.
+\end{equation}
+The exact notebook then shifts the scores and makes a seeded probability-weighted draw:
+\begin{equation}\label{eq:12}
+w_i=q(z_i)-\min_j q(z_j)+\varepsilon,\qquad
+\pi_i=\frac{w_i}{\sum_{j=1}^{M}w_j},
+\end{equation}
+\begin{equation}\label{eq:13}
+I_{\mathrm{BND}}=
+\operatorname{WeightedSampleWithoutReplacement}
+\bigl(\{1,\ldots,M\},N_{\mathrm{new}};\pi,\mathrm{seed}=42\bigr).
+\end{equation}
+The score favors local class mixing; it does not prove that a candidate is correctly labeled, informative, or on a particular classifier's learned boundary. Majority-dominated overlap and exact duplicate coordinates can still cause harm. RND, DEN, and BND choose distinct pool indices, although selected coordinates can coincide.
+
+\subsection{Parameters, Algorithm, and Cost}
+
+For SMOTE, ADASYN, MWMOTE, and G-SMOTE generation, the safe minority-neighborhood size is
+\begin{equation}\label{eq:14}
+k_{\mathrm{safe}}=\min(5,n_{\min}-1).
+\end{equation}
+The historical diversity cluster count is
+\begin{equation}\label{eq:15}
+K=\min\left\{\max\!\left(2,\left\lfloor N_{\mathrm{new}}/5\right\rfloor\right),
+\max\!\left(1,\left\lfloor M/2\right\rfloor\right),20\right\}.
+\end{equation}
+The reported classifier experiments use the same \(k_{\mathrm{safe}}\) and seed 42 across generators; the selector-specific neighborhoods above are separate.
+
+\noindent\textbf{BGPO algorithm.} (1) Fit feature preprocessing on the training fold and determine \(N_{\mathrm{new}}\). (2) Request candidates from each generator and concatenate the indexed pool, recording actual counts. (3) If \(M<N_{\mathrm{new}}\), report an unavailable fold; otherwise, calculate \(p_{\min}\), \(p_{\mathrm{maj}}\), \(q\), and \(\pi\) from the original training fold. (4) Draw exactly \(N_{\mathrm{new}}\) candidate indices by equation~\eqref{eq:13}, append them with minority labels, fit the classifier, and evaluate only on the untouched test fold. Supplementary Algorithms 1--4 give the four executed selection procedures.
+
+The pool requires \(O(Md)\) feature storage. A direct exhaustive-neighbor implementation of BND scoring has \(O(Mnd)\) distance cost for \(n\) original training observations and \(d\) features; a nearest-neighbor index can change the observed cost. DEN also requires original-training neighbor queries, and DIV adds seeded \(k\)-means with approximate \(O(TMKd)\) work for \(T\) iterations. Weighted sampling and four candidate generators add further cost. We therefore report observed sequential timings in addition to these selection-stage bounds.

@@ -1,0 +1,54 @@
+{
+  "dataset": "abalone19",
+  "fold": 4,
+  "budget": 3289,
+  "pool_size": 13156,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 3289,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.003406750038266182
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 3289,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.003941667033359408
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 3289,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.013871666975319386
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 3289,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0010049999691545963
+    }
+  },
+  "same_candidate_indices": 1187,
+  "historical_unique_indices": 3289,
+  "reference_metric_match": true,
+  "seconds": 1.3881971249356866
+}

@@ -1,0 +1,68 @@
+{
+  "dataset": "satimage",
+  "fold": 1,
+  "train_indices_sha256": "e1aae512e5516fbe417dd50662a0ec05e42ee6e1beb37d8756b9f74c0f335107",
+  "test_indices_sha256": "cf1a0a8632c025d1b021c5f094d483d38a1ff0d7ee1b41d05b1df9b2444d7cc2",
+  "train_n": 5144,
+  "test_n": 1286,
+  "minority_train": 500,
+  "minority_test": 125,
+  "budget": 4144,
+  "pool_size": 16576,
+  "pool_generators": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 4144,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.008959750179201365
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 4144,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.009491292061284184
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 4144,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 1.6598562081344426
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 4144,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.005427875090390444
+    }
+  },
+  "smote": {
+    "status": "ok",
+    "added": 4144,
+    "seconds": 0.01041220803745091,
+    "parameters": {
+      "proportion": 1.0,
+      "random_state": 42,
+      "n_neighbors": 5
+    }
+  },
+  "selected_intersection": 2338,
+  "seconds": 18.484304541023448
+}

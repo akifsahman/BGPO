@@ -1,0 +1,54 @@
+{
+  "dataset": "vehicle2",
+  "fold": 1,
+  "budget": 328,
+  "pool_size": 1312,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 328,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.001707332907244563
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 328,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.002176125068217516
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 328,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.19787295907735825
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 328,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0009495839476585388
+    }
+  },
+  "same_candidate_indices": 160,
+  "historical_unique_indices": 328,
+  "reference_metric_match": true,
+  "seconds": 0.4549978750292212
+}

@@ -1,0 +1,13 @@
+{
+  "dataset": "haberman",
+  "fold": 1,
+  "budget": 116,
+  "pool_size": 464,
+  "duplicate_excess": {
+    "HIST_RND": 5,
+    "HIST_DEN": 4,
+    "HIST_DIV": 6,
+    "HIST_BND": 4
+  },
+  "historical_BND_reference_match": true
+}

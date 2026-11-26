@@ -1,0 +1,39 @@
+{
+  "augmentation_rate": 1.0,
+  "seed": 42,
+  "preprocessing": "train-fitted ordinal encoding, median imputation, StandardScaler",
+  "classifier_templates": {
+    "SVM_RBF": "SVC(random_state=42)",
+    "KNN": "KNeighborsClassifier()",
+    "RandomForest": "RandomForestClassifier(n_jobs=1, random_state=42)"
+  },
+  "methods": [
+    "Original",
+    "ROS",
+    "SMOTE",
+    "ADASYN",
+    "Borderline_SMOTE1",
+    "Borderline_SMOTE2",
+    "MWMOTE",
+    "G_SMOTE",
+    "kmeans_SMOTE",
+    "RND",
+    "DIV",
+    "DEN",
+    "BND"
+  ],
+  "metrics": [
+    "F1",
+    "BalancedAccuracy",
+    "GMean",
+    "ROC_AUC",
+    "MCC"
+  ],
+  "versions": {
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.5.2",
+    "imbalanced-learn": "0.12.4",
+    "smote-variants": "1.0.1"
+  }
+}

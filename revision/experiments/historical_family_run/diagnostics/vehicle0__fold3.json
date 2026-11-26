@@ -1,0 +1,13 @@
+{
+  "dataset": "vehicle0",
+  "fold": 3,
+  "budget": 359,
+  "pool_size": 1436,
+  "duplicate_excess": {
+    "HIST_RND": 5,
+    "HIST_DEN": 16,
+    "HIST_DIV": 14,
+    "HIST_BND": 8
+  },
+  "historical_BND_reference_match": true
+}

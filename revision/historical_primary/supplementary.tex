@@ -1,0 +1,972 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,margin=15mm]{geometry}
+\usepackage{amsmath,amssymb,array,booktabs,longtable}
+\usepackage[hidelinks]{hyperref}
+\setlength{\emergencystretch}{2em}
+\renewcommand{\thetable}{S\arabic{table}}
+\begin{document}
+\begin{center}{\Large\bfseries Supplementary Information}\par\medskip
+{\large Boundary-Guided Sample Selection from a Composite Synthetic Pool for Imbalanced Classification}\par\medskip
+Mehmet Akif \c{S}ahman\par Sel\c{c}uk University, Konya, Turkey\par
+Correspondence: \texttt{asahman@selcuk.edu.tr}\end{center}
+\noindent Dataset-level values are five-fold means. These algorithms reproduce the historical notebook with seed 42 and indexed pool positions.
+
+
+\section*{Supplementary algorithms}
+\noindent The four procedures below describe the selectors used for the revised experiments. The candidate pool is an indexed sequence $P=(z_1,\ldots,z_M)$: equal coordinates at different positions remain separate candidates. Mathematical indices below are one-based; the released Python code uses zero-based indices. Each selector returns positions in draw order, which are appended to the original training fold with minority labels. All neighborhood fits use original training observations only. In the reported experiments a fold is unavailable when $M<N_{\mathrm{new}}$.
+
+\subsection*{Supplementary Algorithm 1. Random selection (RND)}
+\noindent\textbf{Input:} indexed pool $P$, budget $N_{\mathrm{new}}$, seed $42$.\par
+\noindent\textbf{Output:} ordered selected pool positions $I_{\mathrm{RND}}$.\par\smallskip
+\noindent\begin{tabular}{@{}r@{\hspace{1em}}p{0.88\linewidth}@{}}
+1 & If $N_{\mathrm{new}}\leq 0$, return the empty list.\\[2pt]
+2 & If $M<N_{\mathrm{new}}$, report an unavailable fold.\\[2pt]
+3 & Create $R=\operatorname{RandomState}(42)$.\\[2pt]
+4 & Draw $I_{\mathrm{RND}}=R.\operatorname{choice}(\{1,\ldots,M\},\ \mathrm{size}=N_{\mathrm{new}},\ \mathrm{replace}=\mathrm{False})$ [main-text Eq.~4].\\[2pt]
+5 & Return $I_{\mathrm{RND}}$ and the candidates $P[I_{\mathrm{RND}}]$ in draw order.\\
+\end{tabular}
+
+\clearpage
+\subsection*{Supplementary Algorithm 2. Diversity-guided selection (DIV)}
+\noindent\textbf{Input:} indexed pool $P$, budget $N_{\mathrm{new}}$, seed $42$.\par
+\noindent\textbf{Output:} ordered selected pool positions $I_{\mathrm{DIV}}$.\par\smallskip
+\noindent\begin{tabular}{@{}r@{\hspace{1em}}p{0.88\linewidth}@{}}
+1 & If $N_{\mathrm{new}}\leq0$, return the empty list; if $M<N_{\mathrm{new}}$, report an unavailable fold.\\[2pt]
+2 & Set $K=\min\{\max(2,\lfloor N_{\mathrm{new}}/5\rfloor),\ \max(1,\lfloor M/2\rfloor),\ 20\}$ [Eq.~15].\\[2pt]
+3 & Create $R=\operatorname{RandomState}(42)$.\\[2pt]
+4 & If $K=1$ or $M\leq K$, draw $N_{\mathrm{new}}$ positions uniformly without replacement and return them.\\[2pt]
+5 & Fit $\operatorname{KMeans}(n_{\mathrm{clusters}}=K,\ \mathrm{random\_state}=42,\ n_{\mathrm{init}}=10)$ to $P$ [Eq.~5].\\[2pt]
+6 & For every cluster label $c$, let $C_c$ be its list of pool positions.\\[2pt]
+7 & Sort clusters by $(|C_c|,c)$ in descending order: larger clusters first, then larger label on ties.\\[2pt]
+8 & Set $b=\lfloor N_{\mathrm{new}}/K\rfloor$ and $h=N_{\mathrm{new}}\bmod K$; start $I_{\mathrm{DIV}}$ as an empty list.\\[2pt]
+9 & For each cluster $C_c$ at zero-based rank $r=0,\ldots,K-1$ in that order:\\[2pt]
+10 & \quad Set $q_c=\min\{|C_c|,\ b+\mathbf{1}(r<h)\}$ [Eq.~6].\\[2pt]
+11 & \quad If $q_c>0$, draw $q_c$ positions from $C_c$ using $R.\operatorname{choice}(C_c,\mathrm{size}=q_c,\mathrm{replace}=\mathrm{False})$.\\[2pt]
+12 & \quad Append the drawn positions, in draw order, to $I_{\mathrm{DIV}}$.\\[2pt]
+13 & While $|I_{\mathrm{DIV}}|<N_{\mathrm{new}}$, append $1+R.\operatorname{randint}(0,M)$ (whole-pool replacement fill).\\[2pt]
+14 & Return $I_{\mathrm{DIV}}$ and $P[I_{\mathrm{DIV}}]$. The exceptional fill can repeat positions.\\
+\end{tabular}
+
+\clearpage
+\subsection*{Supplementary Algorithm 3. Density-guided selection (DEN)}
+\noindent\textbf{Input:} indexed pool $P$, original training features $X$, labels $y\in\{0,1\}$, budget $N_{\mathrm{new}}$, seed $42$.\par
+\noindent\textbf{Output:} ordered selected pool positions $I_{\mathrm{DEN}}$.\par\smallskip
+\noindent\begin{tabular}{@{}r@{\hspace{1em}}p{0.88\linewidth}@{}}
+1 & If $N_{\mathrm{new}}\leq0$, return the empty list; if $M<N_{\mathrm{new}}$, report an unavailable fold.\\[2pt]
+2 & Let $X_{\min}=\{x_j:y_j=1\}$; set $k_{\min}=\min(5,|X_{\min}|-1)$ and $k_{\mathrm{all}}=\min(5,|X|-1)$.\\[2pt]
+3 & Fit nearest-neighbor queries to $X_{\min}$ with $k_{\min}$ and to the complete original $X$ with $k_{\mathrm{all}}$; require both counts to be positive.\\[2pt]
+4 & For each candidate position $i=1,\ldots,M$:\\[2pt]
+5 & \quad Set $\bar d_{\min}(z_i)$ to the mean distance to its $k_{\min}$ nearest observations in $X_{\min}$.\\[2pt]
+6 & \quad Set $a_{\mathrm{maj}}(z_i)$ to the fraction of majority labels among its $k_{\mathrm{all}}$ nearest observations in $X$.\\[2pt]
+7 & \quad Set $s_i=1/\{[\bar d_{\min}(z_i)+\varepsilon][a_{\mathrm{maj}}(z_i)+\varepsilon]\}$, $\varepsilon=10^{-9}$ [Eq.~7].\\[2pt]
+8 & Set $w_i=s_i-\min_j s_j+\varepsilon$ and $\pi_i=w_i/\sum_j w_j$.\\[2pt]
+9 & Create $R=\operatorname{RandomState}(42)$ and draw $I_{\mathrm{DEN}}=R.\operatorname{choice}(\{1,\ldots,M\},N_{\mathrm{new}},\mathrm{replace}=\mathrm{False},p=\pi)$ [Eq.~8].\\[2pt]
+10 & Return $I_{\mathrm{DEN}}$ and $P[I_{\mathrm{DEN}}]$ in draw order.\\
+\end{tabular}
+
+\clearpage
+\subsection*{Supplementary Algorithm 4. Boundary-guided selection (BND)}
+\noindent\textbf{Input:} indexed pool $P$, original training features $X$, labels $y\in\{0,1\}$, budget $N_{\mathrm{new}}$, seed $42$.\par
+\noindent\textbf{Output:} ordered selected pool positions $I_{\mathrm{BND}}$.\par\smallskip
+\noindent\begin{tabular}{@{}r@{\hspace{1em}}p{0.88\linewidth}@{}}
+1 & If $N_{\mathrm{new}}\leq0$, return the empty list; if $M<N_{\mathrm{new}}$, report an unavailable fold.\\[2pt]
+2 & Set $k_{\mathrm{BND}}=\min(10,|X|-1)$ and fit a $k_{\mathrm{BND}}$ nearest-neighbor query to the complete original training $X$.\\[2pt]
+3 & For each candidate position $i=1,\ldots,M$:\\[2pt]
+4 & \quad Query the $k_{\mathrm{BND}}$ nearest original training observations of $z_i$.\\[2pt]
+5 & \quad Set $p_{\min,i}$ and $p_{\mathrm{maj},i}$ to their minority and majority fractions [Eqs.~9--10].\\[2pt]
+6 & \quad Set $q_i=\max\{1-|p_{\min,i}-p_{\mathrm{maj},i}|,\varepsilon\}$, $\varepsilon=10^{-9}$ [Eq.~11].\\[2pt]
+7 & Set $w_i=q_i-\min_j q_j+\varepsilon$ and $\pi_i=w_i/\sum_j w_j$ [Eq.~12].\\[2pt]
+8 & Create $R=\operatorname{RandomState}(42)$ and draw $I_{\mathrm{BND}}=R.\operatorname{choice}(\{1,\ldots,M\},N_{\mathrm{new}},\mathrm{replace}=\mathrm{False},p=\pi)$ [Eq.~13].\\[2pt]
+9 & Return $I_{\mathrm{BND}}$ and $P[I_{\mathrm{BND}}]$ in draw order.\\
+\end{tabular}
+
+\clearpage
+
+
+\section*{Dataset-level selector outcomes}
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{lllllrr}
+\caption{Five-fold results for SVM\_RBF on 44 KEEL datasets}\label{tab:s1}\\
+\toprule
+Dataset & Rule & F1 & BAcc & G-Mean & ROC-AUC & MCC \\
+\midrule
+\endfirsthead
+\toprule
+Dataset & Rule & F1 & BAcc & G-Mean & ROC-AUC & MCC \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+abalone19 & RND & 0.050 & 0.656 & 0.613 & 0.773 & 0.083 \\
+abalone19 & DIV & 0.060 & 0.713 & 0.694 & 0.778 & 0.109 \\
+abalone19 & DEN & 0.049 & 0.622 & 0.492 & 0.760 & 0.071 \\
+abalone19 & BND & 0.044 & 0.614 & 0.542 & 0.765 & 0.063 \\
+abalone9-18 & RND & 0.432 & 0.809 & 0.803 & 0.916 & 0.424 \\
+abalone9-18 & DIV & 0.413 & 0.833 & 0.828 & 0.916 & 0.420 \\
+abalone9-18 & DEN & 0.446 & 0.784 & 0.768 & 0.918 & 0.427 \\
+abalone9-18 & BND & 0.446 & 0.801 & 0.791 & 0.922 & 0.432 \\
+ecoli-0-1-3-7\_vs\_2-6 & RND & 0.290 & 0.819 & 0.711 & 0.925 & 0.339 \\
+ecoli-0-1-3-7\_vs\_2-6 & DIV & 0.369 & 0.828 & 0.719 & 0.940 & 0.425 \\
+ecoli-0-1-3-7\_vs\_2-6 & DEN & 0.733 & 0.850 & 0.741 & 0.911 & 0.740 \\
+ecoli-0-1-3-7\_vs\_2-6 & BND & 0.733 & 0.850 & 0.741 & 0.894 & 0.740 \\
+ecoli-0\_vs\_1 & RND & 0.968 & 0.976 & 0.976 & 0.992 & 0.952 \\
+ecoli-0\_vs\_1 & DIV & 0.968 & 0.976 & 0.976 & 0.991 & 0.952 \\
+ecoli-0\_vs\_1 & DEN & 0.967 & 0.973 & 0.973 & 0.993 & 0.950 \\
+ecoli-0\_vs\_1 & BND & 0.968 & 0.976 & 0.976 & 0.990 & 0.952 \\
+ecoli1 & RND & 0.788 & 0.890 & 0.887 & 0.956 & 0.729 \\
+ecoli1 & DIV & 0.770 & 0.890 & 0.887 & 0.957 & 0.707 \\
+ecoli1 & DEN & 0.841 & 0.897 & 0.895 & 0.954 & 0.795 \\
+ecoli1 & BND & 0.789 & 0.905 & 0.902 & 0.951 & 0.734 \\
+ecoli2 & RND & 0.836 & 0.936 & 0.936 & 0.965 & 0.809 \\
+ecoli2 & DIV & 0.860 & 0.942 & 0.941 & 0.966 & 0.835 \\
+ecoli2 & DEN & 0.898 & 0.950 & 0.949 & 0.965 & 0.880 \\
+ecoli2 & BND & 0.827 & 0.927 & 0.926 & 0.962 & 0.798 \\
+ecoli3 & RND & 0.591 & 0.869 & 0.861 & 0.947 & 0.571 \\
+ecoli3 & DIV & 0.598 & 0.870 & 0.863 & 0.944 & 0.579 \\
+ecoli3 & DEN & 0.665 & 0.865 & 0.858 & 0.955 & 0.637 \\
+ecoli3 & BND & 0.627 & 0.866 & 0.859 & 0.947 & 0.604 \\
+ecoli4 & RND & 0.762 & 0.889 & 0.883 & 0.992 & 0.758 \\
+ecoli4 & DIV & 0.791 & 0.914 & 0.909 & 0.990 & 0.786 \\
+ecoli4 & DEN & 0.842 & 0.897 & 0.890 & 0.995 & 0.840 \\
+ecoli4 & BND & 0.762 & 0.889 & 0.883 & 0.992 & 0.758 \\
+glass-0-1-2-3\_vs\_4-5-6 & RND & 0.906 & 0.949 & 0.947 & 0.982 & 0.881 \\
+glass-0-1-2-3\_vs\_4-5-6 & DIV & 0.906 & 0.949 & 0.947 & 0.985 & 0.881 \\
+glass-0-1-2-3\_vs\_4-5-6 & DEN & 0.872 & 0.913 & 0.911 & 0.984 & 0.837 \\
+glass-0-1-2-3\_vs\_4-5-6 & BND & 0.895 & 0.939 & 0.937 & 0.981 & 0.867 \\
+glass-0-1-6\_vs\_2 & RND & 0.292 & 0.645 & 0.607 & 0.804 & 0.212 \\
+glass-0-1-6\_vs\_2 & DIV & 0.423 & 0.778 & 0.770 & 0.807 & 0.390 \\
+glass-0-1-6\_vs\_2 & DEN & 0.348 & 0.676 & 0.629 & 0.785 & 0.281 \\
+glass-0-1-6\_vs\_2 & BND & 0.310 & 0.643 & 0.593 & 0.770 & 0.232 \\
+glass-0-1-6\_vs\_5 & RND & 0.660 & 0.844 & 0.737 & 0.983 & 0.655 \\
+glass-0-1-6\_vs\_5 & DIV & 0.660 & 0.844 & 0.737 & 0.980 & 0.655 \\
+glass-0-1-6\_vs\_5 & DEN & 0.660 & 0.844 & 0.737 & 0.980 & 0.655 \\
+glass-0-1-6\_vs\_5 & BND & 0.660 & 0.844 & 0.737 & 0.980 & 0.655 \\
+glass0 & RND & 0.711 & 0.793 & 0.784 & 0.865 & 0.555 \\
+glass0 & DIV & 0.720 & 0.804 & 0.797 & 0.865 & 0.572 \\
+glass0 & DEN & 0.726 & 0.803 & 0.800 & 0.864 & 0.583 \\
+glass0 & BND & 0.711 & 0.793 & 0.783 & 0.859 & 0.554 \\
+glass1 & RND & 0.611 & 0.695 & 0.690 & 0.797 & 0.382 \\
+glass1 & DIV & 0.636 & 0.714 & 0.711 & 0.806 & 0.415 \\
+glass1 & DEN & 0.602 & 0.694 & 0.683 & 0.784 & 0.396 \\
+glass1 & BND & 0.617 & 0.688 & 0.684 & 0.794 & 0.366 \\
+glass2 & RND & 0.382 & 0.741 & 0.728 & 0.851 & 0.340 \\
+glass2 & DIV & 0.454 & 0.812 & 0.809 & 0.884 & 0.436 \\
+glass2 & DEN & 0.347 & 0.691 & 0.582 & 0.822 & 0.299 \\
+glass2 & BND & 0.439 & 0.758 & 0.743 & 0.852 & 0.398 \\
+glass4 & RND & 0.771 & 0.904 & 0.893 & 0.988 & 0.775 \\
+glass4 & DIV & 0.750 & 0.930 & 0.921 & 0.993 & 0.763 \\
+glass4 & DEN & 0.755 & 0.876 & 0.849 & 0.987 & 0.774 \\
+glass4 & BND & 0.788 & 0.907 & 0.895 & 0.988 & 0.790 \\
+glass5 & RND & 0.613 & 0.795 & 0.679 & 0.983 & 0.614 \\
+glass5 & DIV & 0.613 & 0.795 & 0.679 & 0.983 & 0.614 \\
+glass5 & DEN & 0.633 & 0.798 & 0.681 & 0.976 & 0.635 \\
+glass5 & BND & 0.613 & 0.795 & 0.679 & 0.983 & 0.614 \\
+glass6 & RND & 0.835 & 0.874 & 0.862 & 0.971 & 0.825 \\
+glass6 & DIV & 0.857 & 0.891 & 0.881 & 0.971 & 0.846 \\
+glass6 & DEN & 0.812 & 0.843 & 0.827 & 0.972 & 0.808 \\
+glass6 & BND & 0.842 & 0.888 & 0.879 & 0.972 & 0.827 \\
+haberman & RND & 0.425 & 0.599 & 0.583 & 0.643 & 0.190 \\
+haberman & DIV & 0.454 & 0.624 & 0.609 & 0.664 & 0.235 \\
+haberman & DEN & 0.431 & 0.601 & 0.590 & 0.631 & 0.190 \\
+haberman & BND & 0.429 & 0.600 & 0.588 & 0.650 & 0.189 \\
+iris0 & RND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+iris0 & DIV & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+iris0 & DEN & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+iris0 & BND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+new-thyroid1 & RND & 0.973 & 0.994 & 0.994 & 0.998 & 0.969 \\
+new-thyroid1 & DIV & 0.973 & 0.994 & 0.994 & 0.999 & 0.969 \\
+new-thyroid1 & DEN & 0.927 & 0.952 & 0.950 & 0.998 & 0.916 \\
+new-thyroid1 & BND & 0.973 & 0.994 & 0.994 & 0.998 & 0.969 \\
+new-thyroid2 & RND & 0.973 & 0.994 & 0.994 & 0.998 & 0.969 \\
+new-thyroid2 & DIV & 0.973 & 0.994 & 0.994 & 0.998 & 0.969 \\
+new-thyroid2 & DEN & 0.940 & 0.966 & 0.963 & 0.998 & 0.933 \\
+new-thyroid2 & BND & 0.973 & 0.994 & 0.994 & 0.998 & 0.969 \\
+page-blocks-1-3\_vs\_4 & RND & 0.814 & 0.985 & 0.985 & 0.993 & 0.818 \\
+page-blocks-1-3\_vs\_4 & DIV & 0.691 & 0.849 & 0.835 & 0.991 & 0.676 \\
+page-blocks-1-3\_vs\_4 & DEN & 0.875 & 0.927 & 0.924 & 0.996 & 0.868 \\
+page-blocks-1-3\_vs\_4 & BND & 0.830 & 0.986 & 0.986 & 0.993 & 0.834 \\
+page-blocks0 & RND & 0.754 & 0.944 & 0.944 & 0.979 & 0.741 \\
+page-blocks0 & DIV & 0.775 & 0.931 & 0.931 & 0.979 & 0.756 \\
+page-blocks0 & DEN & 0.830 & 0.920 & 0.919 & 0.976 & 0.810 \\
+page-blocks0 & BND & 0.753 & 0.947 & 0.947 & 0.979 & 0.741 \\
+pima & RND & 0.672 & 0.746 & 0.745 & 0.824 & 0.474 \\
+pima & DIV & 0.674 & 0.748 & 0.747 & 0.826 & 0.483 \\
+pima & DEN & 0.643 & 0.725 & 0.721 & 0.828 & 0.442 \\
+pima & BND & 0.665 & 0.740 & 0.739 & 0.821 & 0.462 \\
+segment0 & RND & 0.976 & 0.992 & 0.992 & 1.000 & 0.972 \\
+segment0 & DIV & 0.978 & 0.994 & 0.994 & 1.000 & 0.974 \\
+segment0 & DEN & 0.985 & 0.987 & 0.987 & 1.000 & 0.982 \\
+segment0 & BND & 0.966 & 0.993 & 0.993 & 1.000 & 0.961 \\
+shuttle-c0-vs-c4 & RND & 0.992 & 0.999 & 0.999 & 1.000 & 0.992 \\
+shuttle-c0-vs-c4 & DIV & 0.988 & 0.995 & 0.995 & 1.000 & 0.987 \\
+shuttle-c0-vs-c4 & DEN & 0.988 & 0.995 & 0.995 & 1.000 & 0.987 \\
+shuttle-c0-vs-c4 & BND & 0.988 & 0.995 & 0.995 & 1.000 & 0.987 \\
+shuttle-c2-vs-c4 & RND & 0.933 & 0.950 & 0.941 & 1.000 & 0.939 \\
+shuttle-c2-vs-c4 & DIV & 0.933 & 0.950 & 0.941 & 1.000 & 0.939 \\
+shuttle-c2-vs-c4 & DEN & 0.933 & 0.950 & 0.941 & 1.000 & 0.939 \\
+shuttle-c2-vs-c4 & BND & 0.933 & 0.950 & 0.941 & 1.000 & 0.939 \\
+vehicle0 & RND & 0.932 & 0.976 & 0.976 & 0.996 & 0.913 \\
+vehicle0 & DIV & 0.928 & 0.973 & 0.972 & 0.996 & 0.907 \\
+vehicle0 & DEN & 0.944 & 0.970 & 0.970 & 0.996 & 0.927 \\
+vehicle0 & BND & 0.926 & 0.974 & 0.973 & 0.996 & 0.905 \\
+vehicle1 & RND & 0.680 & 0.820 & 0.817 & 0.890 & 0.567 \\
+vehicle1 & DIV & 0.685 & 0.827 & 0.822 & 0.889 & 0.577 \\
+vehicle1 & DEN & 0.651 & 0.786 & 0.785 & 0.875 & 0.517 \\
+vehicle1 & BND & 0.673 & 0.815 & 0.811 & 0.889 & 0.557 \\
+vehicle2 & RND & 0.951 & 0.973 & 0.973 & 0.996 & 0.934 \\
+vehicle2 & DIV & 0.955 & 0.974 & 0.973 & 0.996 & 0.939 \\
+vehicle2 & DEN & 0.952 & 0.970 & 0.970 & 0.995 & 0.936 \\
+vehicle2 & BND & 0.941 & 0.972 & 0.972 & 0.994 & 0.920 \\
+vehicle3 & RND & 0.662 & 0.813 & 0.807 & 0.871 & 0.551 \\
+vehicle3 & DIV & 0.661 & 0.811 & 0.805 & 0.872 & 0.546 \\
+vehicle3 & DEN & 0.648 & 0.794 & 0.792 & 0.866 & 0.521 \\
+vehicle3 & BND & 0.654 & 0.805 & 0.800 & 0.871 & 0.537 \\
+vowel0 & RND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+vowel0 & DIV & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+vowel0 & DEN & 0.995 & 0.999 & 0.999 & 1.000 & 0.994 \\
+vowel0 & BND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+wisconsin & RND & 0.960 & 0.976 & 0.975 & 0.984 & 0.938 \\
+wisconsin & DIV & 0.957 & 0.972 & 0.972 & 0.986 & 0.934 \\
+wisconsin & DEN & 0.953 & 0.967 & 0.967 & 0.988 & 0.927 \\
+wisconsin & BND & 0.960 & 0.977 & 0.976 & 0.983 & 0.938 \\
+yeast-0-5-6-7-9\_vs\_4 & RND & 0.453 & 0.755 & 0.731 & 0.876 & 0.403 \\
+yeast-0-5-6-7-9\_vs\_4 & DIV & 0.458 & 0.744 & 0.715 & 0.884 & 0.409 \\
+yeast-0-5-6-7-9\_vs\_4 & DEN & 0.519 & 0.754 & 0.718 & 0.879 & 0.480 \\
+yeast-0-5-6-7-9\_vs\_4 & BND & 0.471 & 0.743 & 0.708 & 0.874 & 0.423 \\
+yeast-1-2-8-9\_vs\_7 & RND & 0.127 & 0.625 & 0.592 & 0.698 & 0.114 \\
+yeast-1-2-8-9\_vs\_7 & DIV & 0.129 & 0.618 & 0.575 & 0.705 & 0.113 \\
+yeast-1-2-8-9\_vs\_7 & DEN & 0.198 & 0.692 & 0.655 & 0.740 & 0.202 \\
+yeast-1-2-8-9\_vs\_7 & BND & 0.173 & 0.662 & 0.601 & 0.729 & 0.170 \\
+yeast-1-4-5-8\_vs\_7 & RND & 0.126 & 0.575 & 0.515 & 0.657 & 0.080 \\
+yeast-1-4-5-8\_vs\_7 & DIV & 0.121 & 0.569 & 0.517 & 0.649 & 0.072 \\
+yeast-1-4-5-8\_vs\_7 & DEN & 0.139 & 0.586 & 0.521 & 0.654 & 0.096 \\
+yeast-1-4-5-8\_vs\_7 & BND & 0.120 & 0.565 & 0.444 & 0.662 & 0.071 \\
+yeast-1\_vs\_7 & RND & 0.291 & 0.687 & 0.669 & 0.770 & 0.248 \\
+yeast-1\_vs\_7 & DIV & 0.291 & 0.698 & 0.683 & 0.758 & 0.254 \\
+yeast-1\_vs\_7 & DEN & 0.351 & 0.701 & 0.667 & 0.796 & 0.309 \\
+yeast-1\_vs\_7 & BND & 0.347 & 0.735 & 0.720 & 0.786 & 0.317 \\
+yeast-2\_vs\_4 & RND & 0.710 & 0.892 & 0.889 & 0.970 & 0.683 \\
+yeast-2\_vs\_4 & DIV & 0.715 & 0.893 & 0.890 & 0.975 & 0.689 \\
+yeast-2\_vs\_4 & DEN & 0.808 & 0.874 & 0.865 & 0.973 & 0.795 \\
+yeast-2\_vs\_4 & BND & 0.740 & 0.897 & 0.894 & 0.974 & 0.716 \\
+yeast-2\_vs\_8 & RND & 0.135 & 0.621 & 0.518 & 0.710 & 0.111 \\
+yeast-2\_vs\_8 & DIV & 0.304 & 0.708 & 0.665 & 0.804 & 0.290 \\
+yeast-2\_vs\_8 & DEN & 0.668 & 0.774 & 0.728 & 0.864 & 0.698 \\
+yeast-2\_vs\_8 & BND & 0.186 & 0.640 & 0.519 & 0.762 & 0.162 \\
+yeast1 & RND & 0.596 & 0.718 & 0.718 & 0.792 & 0.401 \\
+yeast1 & DIV & 0.599 & 0.721 & 0.719 & 0.792 & 0.410 \\
+yeast1 & DEN & 0.585 & 0.708 & 0.707 & 0.792 & 0.392 \\
+yeast1 & BND & 0.589 & 0.713 & 0.711 & 0.790 & 0.389 \\
+yeast3 & RND & 0.704 & 0.901 & 0.900 & 0.964 & 0.677 \\
+yeast3 & DIV & 0.698 & 0.895 & 0.894 & 0.965 & 0.670 \\
+yeast3 & DEN & 0.795 & 0.881 & 0.875 & 0.970 & 0.771 \\
+yeast3 & BND & 0.709 & 0.904 & 0.904 & 0.964 & 0.683 \\
+yeast4 & RND & 0.280 & 0.757 & 0.732 & 0.889 & 0.294 \\
+yeast4 & DIV & 0.289 & 0.774 & 0.757 & 0.894 & 0.308 \\
+yeast4 & DEN & 0.305 & 0.733 & 0.689 & 0.897 & 0.303 \\
+yeast4 & BND & 0.307 & 0.740 & 0.701 & 0.896 & 0.307 \\
+yeast5 & RND & 0.632 & 0.939 & 0.938 & 0.989 & 0.651 \\
+yeast5 & DIV & 0.642 & 0.950 & 0.950 & 0.989 & 0.664 \\
+yeast5 & DEN & 0.672 & 0.910 & 0.907 & 0.988 & 0.676 \\
+yeast5 & BND & 0.642 & 0.940 & 0.938 & 0.989 & 0.660 \\
+yeast6 & RND & 0.353 & 0.816 & 0.798 & 0.913 & 0.381 \\
+yeast6 & DIV & 0.318 & 0.834 & 0.826 & 0.907 & 0.361 \\
+yeast6 & DEN & 0.483 & 0.804 & 0.769 & 0.931 & 0.488 \\
+yeast6 & BND & 0.466 & 0.841 & 0.827 & 0.925 & 0.481 \\
+\end{longtable}
+\endgroup
+\clearpage
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{lllllrr}
+\caption{Five-fold results for KNN on 44 KEEL datasets}\label{tab:s2}\\
+\toprule
+Dataset & Rule & F1 & BAcc & G-Mean & ROC-AUC & MCC \\
+\midrule
+\endfirsthead
+\toprule
+Dataset & Rule & F1 & BAcc & G-Mean & ROC-AUC & MCC \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+abalone19 & RND & 0.037 & 0.567 & 0.394 & 0.621 & 0.043 \\
+abalone19 & DIV & 0.031 & 0.549 & 0.361 & 0.619 & 0.032 \\
+abalone19 & DEN & 0.045 & 0.574 & 0.388 & 0.600 & 0.053 \\
+abalone19 & BND & 0.034 & 0.545 & 0.335 & 0.598 & 0.033 \\
+abalone9-18 & RND & 0.398 & 0.788 & 0.780 & 0.870 & 0.387 \\
+abalone9-18 & DIV & 0.406 & 0.790 & 0.780 & 0.872 & 0.395 \\
+abalone9-18 & DEN & 0.415 & 0.765 & 0.744 & 0.842 & 0.393 \\
+abalone9-18 & BND & 0.374 & 0.748 & 0.728 & 0.829 & 0.349 \\
+ecoli-0-1-3-7\_vs\_2-6 & RND & 0.327 & 0.825 & 0.716 & 0.837 & 0.374 \\
+ecoli-0-1-3-7\_vs\_2-6 & DIV & 0.327 & 0.825 & 0.716 & 0.837 & 0.374 \\
+ecoli-0-1-3-7\_vs\_2-6 & DEN & 0.456 & 0.835 & 0.727 & 0.846 & 0.478 \\
+ecoli-0-1-3-7\_vs\_2-6 & BND & 0.548 & 0.841 & 0.733 & 0.846 & 0.559 \\
+ecoli-0\_vs\_1 & RND & 0.953 & 0.963 & 0.962 & 0.980 & 0.931 \\
+ecoli-0\_vs\_1 & DIV & 0.947 & 0.959 & 0.959 & 0.983 & 0.920 \\
+ecoli-0\_vs\_1 & DEN & 0.944 & 0.950 & 0.949 & 0.978 & 0.920 \\
+ecoli-0\_vs\_1 & BND & 0.953 & 0.963 & 0.962 & 0.980 & 0.931 \\
+ecoli1 & RND & 0.774 & 0.882 & 0.879 & 0.935 & 0.709 \\
+ecoli1 & DIV & 0.785 & 0.883 & 0.881 & 0.931 & 0.721 \\
+ecoli1 & DEN & 0.814 & 0.877 & 0.872 & 0.939 & 0.763 \\
+ecoli1 & BND & 0.776 & 0.880 & 0.877 & 0.928 & 0.712 \\
+ecoli2 & RND & 0.732 & 0.907 & 0.905 & 0.940 & 0.697 \\
+ecoli2 & DIV & 0.725 & 0.905 & 0.903 & 0.940 & 0.688 \\
+ecoli2 & DEN & 0.859 & 0.942 & 0.941 & 0.950 & 0.835 \\
+ecoli2 & BND & 0.764 & 0.917 & 0.916 & 0.939 & 0.732 \\
+ecoli3 & RND & 0.554 & 0.835 & 0.832 & 0.898 & 0.519 \\
+ecoli3 & DIV & 0.540 & 0.832 & 0.829 & 0.899 & 0.505 \\
+ecoli3 & DEN & 0.634 & 0.857 & 0.852 & 0.899 & 0.602 \\
+ecoli3 & BND & 0.575 & 0.831 & 0.827 & 0.908 & 0.536 \\
+ecoli4 & RND & 0.808 & 0.939 & 0.936 & 0.940 & 0.802 \\
+ecoli4 & DIV & 0.790 & 0.937 & 0.935 & 0.941 & 0.785 \\
+ecoli4 & DEN & 0.849 & 0.920 & 0.915 & 0.946 & 0.843 \\
+ecoli4 & BND & 0.790 & 0.937 & 0.935 & 0.940 & 0.785 \\
+glass-0-1-2-3\_vs\_4-5-6 & RND & 0.853 & 0.917 & 0.914 & 0.976 & 0.816 \\
+glass-0-1-2-3\_vs\_4-5-6 & DIV & 0.850 & 0.910 & 0.906 & 0.978 & 0.813 \\
+glass-0-1-2-3\_vs\_4-5-6 & DEN & 0.891 & 0.926 & 0.924 & 0.971 & 0.861 \\
+glass-0-1-2-3\_vs\_4-5-6 & BND & 0.869 & 0.923 & 0.920 & 0.975 & 0.837 \\
+glass-0-1-6\_vs\_2 & RND & 0.372 & 0.747 & 0.723 & 0.771 & 0.332 \\
+glass-0-1-6\_vs\_2 & DIV & 0.344 & 0.717 & 0.693 & 0.743 & 0.293 \\
+glass-0-1-6\_vs\_2 & DEN & 0.338 & 0.667 & 0.632 & 0.765 & 0.266 \\
+glass-0-1-6\_vs\_2 & BND & 0.362 & 0.698 & 0.670 & 0.736 & 0.301 \\
+glass-0-1-6\_vs\_5 & RND & 0.787 & 0.986 & 0.986 & 0.990 & 0.799 \\
+glass-0-1-6\_vs\_5 & DIV & 0.787 & 0.986 & 0.986 & 0.990 & 0.799 \\
+glass-0-1-6\_vs\_5 & DEN & 0.753 & 0.939 & 0.931 & 0.987 & 0.756 \\
+glass-0-1-6\_vs\_5 & BND & 0.813 & 0.989 & 0.988 & 0.990 & 0.822 \\
+glass0 & RND & 0.742 & 0.826 & 0.818 & 0.883 & 0.612 \\
+glass0 & DIV & 0.732 & 0.815 & 0.808 & 0.874 & 0.593 \\
+glass0 & DEN & 0.753 & 0.828 & 0.826 & 0.868 & 0.623 \\
+glass0 & BND & 0.738 & 0.822 & 0.812 & 0.877 & 0.607 \\
+glass1 & RND & 0.687 & 0.756 & 0.754 & 0.815 & 0.499 \\
+glass1 & DIV & 0.718 & 0.780 & 0.779 & 0.824 & 0.549 \\
+glass1 & DEN & 0.661 & 0.736 & 0.729 & 0.815 & 0.478 \\
+glass1 & BND & 0.709 & 0.769 & 0.767 & 0.823 & 0.529 \\
+glass2 & RND & 0.409 & 0.789 & 0.783 & 0.837 & 0.386 \\
+glass2 & DIV & 0.415 & 0.807 & 0.805 & 0.852 & 0.400 \\
+glass2 & DEN & 0.374 & 0.713 & 0.697 & 0.804 & 0.320 \\
+glass2 & BND & 0.365 & 0.731 & 0.720 & 0.816 & 0.318 \\
+glass4 & RND & 0.633 & 0.887 & 0.877 & 0.920 & 0.629 \\
+glass4 & DIV & 0.559 & 0.877 & 0.869 & 0.921 & 0.558 \\
+glass4 & DEN & 0.604 & 0.858 & 0.847 & 0.921 & 0.589 \\
+glass4 & BND & 0.683 & 0.923 & 0.915 & 0.924 & 0.686 \\
+glass5 & RND & 0.849 & 0.985 & 0.985 & 0.993 & 0.861 \\
+glass5 & DIV & 0.716 & 0.933 & 0.924 & 0.993 & 0.741 \\
+glass5 & DEN & 0.743 & 0.933 & 0.928 & 0.941 & 0.747 \\
+glass5 & BND & 0.849 & 0.985 & 0.985 & 0.993 & 0.861 \\
+glass6 & RND & 0.800 & 0.891 & 0.886 & 0.899 & 0.771 \\
+glass6 & DIV & 0.811 & 0.894 & 0.889 & 0.898 & 0.784 \\
+glass6 & DEN & 0.804 & 0.880 & 0.873 & 0.903 & 0.777 \\
+glass6 & BND & 0.770 & 0.886 & 0.881 & 0.898 & 0.735 \\
+haberman & RND & 0.419 & 0.588 & 0.580 & 0.617 & 0.161 \\
+haberman & DIV & 0.456 & 0.622 & 0.615 & 0.635 & 0.222 \\
+haberman & DEN & 0.370 & 0.560 & 0.538 & 0.612 & 0.113 \\
+haberman & BND & 0.428 & 0.602 & 0.588 & 0.622 & 0.187 \\
+iris0 & RND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+iris0 & DIV & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+iris0 & DEN & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+iris0 & BND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+new-thyroid1 & RND & 0.948 & 0.989 & 0.989 & 0.994 & 0.940 \\
+new-thyroid1 & DIV & 0.960 & 0.992 & 0.992 & 0.994 & 0.953 \\
+new-thyroid1 & DEN & 0.910 & 0.937 & 0.934 & 0.992 & 0.896 \\
+new-thyroid1 & BND & 0.921 & 0.972 & 0.971 & 0.994 & 0.910 \\
+new-thyroid2 & RND & 0.948 & 0.989 & 0.989 & 0.994 & 0.940 \\
+new-thyroid2 & DIV & 0.960 & 0.992 & 0.992 & 0.994 & 0.953 \\
+new-thyroid2 & DEN & 0.876 & 0.909 & 0.903 & 0.995 & 0.861 \\
+new-thyroid2 & BND & 0.948 & 0.989 & 0.989 & 0.994 & 0.940 \\
+page-blocks-1-3\_vs\_4 & RND & 0.855 & 0.989 & 0.989 & 1.000 & 0.855 \\
+page-blocks-1-3\_vs\_4 & DIV & 0.841 & 0.988 & 0.988 & 1.000 & 0.843 \\
+page-blocks-1-3\_vs\_4 & DEN & 0.898 & 0.943 & 0.941 & 0.998 & 0.895 \\
+page-blocks-1-3\_vs\_4 & BND & 0.863 & 0.990 & 0.990 & 1.000 & 0.862 \\
+page-blocks0 & RND & 0.775 & 0.936 & 0.936 & 0.968 & 0.758 \\
+page-blocks0 & DIV & 0.787 & 0.932 & 0.932 & 0.968 & 0.769 \\
+page-blocks0 & DEN & 0.849 & 0.909 & 0.906 & 0.958 & 0.832 \\
+page-blocks0 & BND & 0.791 & 0.938 & 0.938 & 0.962 & 0.773 \\
+pima & RND & 0.645 & 0.724 & 0.723 & 0.773 & 0.433 \\
+pima & DIV & 0.644 & 0.723 & 0.723 & 0.774 & 0.432 \\
+pima & DEN & 0.629 & 0.710 & 0.709 & 0.774 & 0.407 \\
+pima & BND & 0.655 & 0.731 & 0.731 & 0.778 & 0.444 \\
+segment0 & RND & 0.962 & 0.991 & 0.991 & 0.995 & 0.956 \\
+segment0 & DIV & 0.960 & 0.989 & 0.989 & 0.995 & 0.954 \\
+segment0 & DEN & 0.972 & 0.991 & 0.991 & 0.996 & 0.967 \\
+segment0 & BND & 0.962 & 0.991 & 0.991 & 0.996 & 0.956 \\
+shuttle-c0-vs-c4 & RND & 0.996 & 0.996 & 0.996 & 1.000 & 0.996 \\
+shuttle-c0-vs-c4 & DIV & 0.996 & 0.996 & 0.996 & 1.000 & 0.996 \\
+shuttle-c0-vs-c4 & DEN & 0.996 & 0.996 & 0.996 & 1.000 & 0.996 \\
+shuttle-c0-vs-c4 & BND & 0.996 & 0.996 & 0.996 & 1.000 & 0.996 \\
+shuttle-c2-vs-c4 & RND & 0.933 & 0.950 & 0.941 & 0.950 & 0.939 \\
+shuttle-c2-vs-c4 & DIV & 0.933 & 0.950 & 0.941 & 0.950 & 0.939 \\
+shuttle-c2-vs-c4 & DEN & 0.933 & 0.950 & 0.941 & 0.950 & 0.939 \\
+shuttle-c2-vs-c4 & BND & 0.933 & 0.950 & 0.941 & 0.950 & 0.939 \\
+vehicle0 & RND & 0.854 & 0.939 & 0.938 & 0.974 & 0.813 \\
+vehicle0 & DIV & 0.852 & 0.938 & 0.937 & 0.976 & 0.810 \\
+vehicle0 & DEN & 0.862 & 0.933 & 0.933 & 0.979 & 0.820 \\
+vehicle0 & BND & 0.847 & 0.937 & 0.936 & 0.974 & 0.805 \\
+vehicle1 & RND & 0.573 & 0.726 & 0.724 & 0.791 & 0.401 \\
+vehicle1 & DIV & 0.574 & 0.727 & 0.725 & 0.783 & 0.402 \\
+vehicle1 & DEN & 0.592 & 0.735 & 0.734 & 0.796 & 0.431 \\
+vehicle1 & BND & 0.588 & 0.739 & 0.737 & 0.790 & 0.424 \\
+vehicle2 & RND & 0.905 & 0.960 & 0.960 & 0.991 & 0.874 \\
+vehicle2 & DIV & 0.914 & 0.964 & 0.964 & 0.991 & 0.886 \\
+vehicle2 & DEN & 0.930 & 0.966 & 0.965 & 0.990 & 0.906 \\
+vehicle2 & BND & 0.881 & 0.948 & 0.947 & 0.988 & 0.843 \\
+vehicle3 & RND & 0.590 & 0.744 & 0.742 & 0.809 & 0.433 \\
+vehicle3 & DIV & 0.583 & 0.738 & 0.737 & 0.801 & 0.423 \\
+vehicle3 & DEN & 0.578 & 0.732 & 0.729 & 0.815 & 0.417 \\
+vehicle3 & BND & 0.584 & 0.739 & 0.736 & 0.809 & 0.425 \\
+vowel0 & RND & 0.995 & 0.999 & 0.999 & 1.000 & 0.994 \\
+vowel0 & DIV & 0.995 & 0.999 & 0.999 & 1.000 & 0.994 \\
+vowel0 & DEN & 0.995 & 0.999 & 0.999 & 1.000 & 0.994 \\
+vowel0 & BND & 0.995 & 0.999 & 0.999 & 1.000 & 0.994 \\
+wisconsin & RND & 0.955 & 0.971 & 0.971 & 0.982 & 0.932 \\
+wisconsin & DIV & 0.953 & 0.968 & 0.968 & 0.986 & 0.928 \\
+wisconsin & DEN & 0.955 & 0.968 & 0.968 & 0.983 & 0.930 \\
+wisconsin & BND & 0.951 & 0.969 & 0.969 & 0.983 & 0.925 \\
+yeast-0-5-6-7-9\_vs\_4 & RND & 0.423 & 0.752 & 0.744 & 0.789 & 0.371 \\
+yeast-0-5-6-7-9\_vs\_4 & DIV & 0.413 & 0.750 & 0.742 & 0.793 & 0.361 \\
+yeast-0-5-6-7-9\_vs\_4 & DEN & 0.450 & 0.748 & 0.723 & 0.809 & 0.399 \\
+yeast-0-5-6-7-9\_vs\_4 & BND & 0.473 & 0.764 & 0.750 & 0.788 & 0.424 \\
+yeast-1-2-8-9\_vs\_7 & RND & 0.144 & 0.665 & 0.624 & 0.725 & 0.147 \\
+yeast-1-2-8-9\_vs\_7 & DIV & 0.159 & 0.686 & 0.650 & 0.732 & 0.169 \\
+yeast-1-2-8-9\_vs\_7 & DEN & 0.173 & 0.685 & 0.637 & 0.745 & 0.179 \\
+yeast-1-2-8-9\_vs\_7 & BND & 0.169 & 0.682 & 0.636 & 0.702 & 0.175 \\
+yeast-1-4-5-8\_vs\_7 & RND & 0.199 & 0.700 & 0.684 & 0.717 & 0.197 \\
+yeast-1-4-5-8\_vs\_7 & DIV & 0.177 & 0.672 & 0.656 & 0.716 & 0.167 \\
+yeast-1-4-5-8\_vs\_7 & DEN & 0.195 & 0.680 & 0.644 & 0.713 & 0.185 \\
+yeast-1-4-5-8\_vs\_7 & BND & 0.214 & 0.711 & 0.693 & 0.741 & 0.215 \\
+yeast-1\_vs\_7 & RND & 0.303 & 0.749 & 0.739 & 0.760 & 0.290 \\
+yeast-1\_vs\_7 & DIV & 0.281 & 0.718 & 0.706 & 0.754 & 0.256 \\
+yeast-1\_vs\_7 & DEN & 0.326 & 0.740 & 0.722 & 0.776 & 0.304 \\
+yeast-1\_vs\_7 & BND & 0.326 & 0.751 & 0.736 & 0.772 & 0.309 \\
+yeast-2\_vs\_4 & RND & 0.708 & 0.891 & 0.888 & 0.917 & 0.683 \\
+yeast-2\_vs\_4 & DIV & 0.701 & 0.890 & 0.887 & 0.930 & 0.676 \\
+yeast-2\_vs\_4 & DEN & 0.812 & 0.867 & 0.855 & 0.919 & 0.802 \\
+yeast-2\_vs\_4 & BND & 0.739 & 0.913 & 0.911 & 0.934 & 0.718 \\
+yeast-2\_vs\_8 & RND & 0.285 & 0.783 & 0.754 & 0.843 & 0.307 \\
+yeast-2\_vs\_8 & DIV & 0.295 & 0.787 & 0.758 & 0.844 & 0.317 \\
+yeast-2\_vs\_8 & DEN & 0.500 & 0.806 & 0.771 & 0.825 & 0.521 \\
+yeast-2\_vs\_8 & BND & 0.387 & 0.809 & 0.778 & 0.835 & 0.399 \\
+yeast1 & RND & 0.563 & 0.690 & 0.690 & 0.742 & 0.348 \\
+yeast1 & DIV & 0.548 & 0.678 & 0.677 & 0.739 & 0.328 \\
+yeast1 & DEN & 0.554 & 0.684 & 0.681 & 0.747 & 0.348 \\
+yeast1 & BND & 0.566 & 0.693 & 0.693 & 0.743 & 0.355 \\
+yeast3 & RND & 0.665 & 0.894 & 0.894 & 0.932 & 0.639 \\
+yeast3 & DIV & 0.667 & 0.897 & 0.897 & 0.926 & 0.642 \\
+yeast3 & DEN & 0.785 & 0.887 & 0.882 & 0.927 & 0.758 \\
+yeast3 & BND & 0.673 & 0.896 & 0.896 & 0.933 & 0.647 \\
+yeast4 & RND & 0.260 & 0.744 & 0.711 & 0.819 & 0.271 \\
+yeast4 & DIV & 0.287 & 0.766 & 0.744 & 0.820 & 0.302 \\
+yeast4 & DEN & 0.303 & 0.747 & 0.710 & 0.817 & 0.307 \\
+yeast4 & BND & 0.313 & 0.756 & 0.721 & 0.818 & 0.319 \\
+yeast5 & RND & 0.648 & 0.961 & 0.961 & 0.979 & 0.672 \\
+yeast5 & DIV & 0.656 & 0.961 & 0.961 & 0.978 & 0.680 \\
+yeast5 & DEN & 0.718 & 0.934 & 0.933 & 0.979 & 0.722 \\
+yeast5 & BND & 0.648 & 0.961 & 0.961 & 0.978 & 0.672 \\
+yeast6 & RND & 0.309 & 0.822 & 0.810 & 0.880 & 0.350 \\
+yeast6 & DIV & 0.290 & 0.818 & 0.807 & 0.864 & 0.333 \\
+yeast6 & DEN & 0.525 & 0.845 & 0.830 & 0.868 & 0.533 \\
+yeast6 & BND & 0.355 & 0.829 & 0.816 & 0.874 & 0.388 \\
+\end{longtable}
+\endgroup
+\clearpage
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{lllllrr}
+\caption{Five-fold results for RandomForest on 44 KEEL datasets}\label{tab:s3}\\
+\toprule
+Dataset & Rule & F1 & BAcc & G-Mean & ROC-AUC & MCC \\
+\midrule
+\endfirsthead
+\toprule
+Dataset & Rule & F1 & BAcc & G-Mean & ROC-AUC & MCC \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+abalone19 & RND & 0.061 & 0.540 & 0.237 & 0.741 & 0.055 \\
+abalone19 & DIV & 0.080 & 0.554 & 0.312 & 0.739 & 0.075 \\
+abalone19 & DEN & 0.049 & 0.527 & 0.162 & 0.751 & 0.042 \\
+abalone19 & BND & 0.041 & 0.528 & 0.162 & 0.764 & 0.036 \\
+abalone9-18 & RND & 0.521 & 0.768 & 0.729 & 0.918 & 0.493 \\
+abalone9-18 & DIV & 0.489 & 0.752 & 0.699 & 0.922 & 0.458 \\
+abalone9-18 & DEN & 0.518 & 0.749 & 0.690 & 0.918 & 0.491 \\
+abalone9-18 & BND & 0.491 & 0.734 & 0.673 & 0.919 & 0.458 \\
+ecoli-0-1-3-7\_vs\_2-6 & RND & 0.493 & 0.748 & 0.540 & 0.874 & 0.502 \\
+ecoli-0-1-3-7\_vs\_2-6 & DIV & 0.660 & 0.846 & 0.738 & 0.871 & 0.658 \\
+ecoli-0-1-3-7\_vs\_2-6 & DEN & 0.700 & 0.848 & 0.740 & 0.962 & 0.696 \\
+ecoli-0-1-3-7\_vs\_2-6 & BND & 0.700 & 0.848 & 0.740 & 0.966 & 0.696 \\
+ecoli-0\_vs\_1 & RND & 0.956 & 0.969 & 0.969 & 0.994 & 0.935 \\
+ecoli-0\_vs\_1 & DIV & 0.974 & 0.980 & 0.979 & 0.993 & 0.961 \\
+ecoli-0\_vs\_1 & DEN & 0.980 & 0.983 & 0.983 & 0.986 & 0.970 \\
+ecoli-0\_vs\_1 & BND & 0.961 & 0.973 & 0.973 & 0.994 & 0.941 \\
+ecoli1 & RND & 0.811 & 0.897 & 0.895 & 0.958 & 0.755 \\
+ecoli1 & DIV & 0.783 & 0.879 & 0.877 & 0.952 & 0.719 \\
+ecoli1 & DEN & 0.789 & 0.868 & 0.863 & 0.964 & 0.728 \\
+ecoli1 & BND & 0.800 & 0.892 & 0.891 & 0.950 & 0.739 \\
+ecoli2 & RND & 0.829 & 0.894 & 0.887 & 0.949 & 0.804 \\
+ecoli2 & DIV & 0.817 & 0.907 & 0.900 & 0.955 & 0.791 \\
+ecoli2 & DEN & 0.823 & 0.878 & 0.868 & 0.960 & 0.801 \\
+ecoli2 & BND & 0.822 & 0.892 & 0.885 & 0.955 & 0.797 \\
+ecoli3 & RND & 0.600 & 0.821 & 0.804 & 0.930 & 0.565 \\
+ecoli3 & DIV & 0.619 & 0.844 & 0.835 & 0.926 & 0.587 \\
+ecoli3 & DEN & 0.552 & 0.767 & 0.745 & 0.929 & 0.502 \\
+ecoli3 & BND & 0.581 & 0.795 & 0.775 & 0.930 & 0.540 \\
+ecoli4 & RND & 0.824 & 0.895 & 0.888 & 0.986 & 0.823 \\
+ecoli4 & DIV & 0.803 & 0.894 & 0.887 & 0.989 & 0.798 \\
+ecoli4 & DEN & 0.756 & 0.825 & 0.788 & 0.989 & 0.781 \\
+ecoli4 & BND & 0.803 & 0.894 & 0.887 & 0.982 & 0.798 \\
+glass-0-1-2-3\_vs\_4-5-6 & RND & 0.855 & 0.912 & 0.909 & 0.983 & 0.816 \\
+glass-0-1-2-3\_vs\_4-5-6 & DIV & 0.862 & 0.915 & 0.912 & 0.981 & 0.825 \\
+glass-0-1-2-3\_vs\_4-5-6 & DEN & 0.881 & 0.923 & 0.920 & 0.976 & 0.848 \\
+glass-0-1-2-3\_vs\_4-5-6 & BND & 0.855 & 0.912 & 0.909 & 0.982 & 0.818 \\
+glass-0-1-6\_vs\_2 & RND & 0.183 & 0.552 & 0.306 & 0.828 & 0.118 \\
+glass-0-1-6\_vs\_2 & DIV & 0.237 & 0.577 & 0.413 & 0.785 & 0.173 \\
+glass-0-1-6\_vs\_2 & DEN & 0.227 & 0.569 & 0.312 & 0.810 & 0.207 \\
+glass-0-1-6\_vs\_2 & BND & 0.183 & 0.549 & 0.306 & 0.783 & 0.115 \\
+glass-0-1-6\_vs\_5 & RND & 0.700 & 0.844 & 0.739 & 0.989 & 0.686 \\
+glass-0-1-6\_vs\_5 & DIV & 0.700 & 0.844 & 0.739 & 0.989 & 0.686 \\
+glass-0-1-6\_vs\_5 & DEN & 0.600 & 0.797 & 0.600 & 0.989 & 0.592 \\
+glass-0-1-6\_vs\_5 & BND & 0.600 & 0.794 & 0.600 & 0.989 & 0.584 \\
+glass0 & RND & 0.804 & 0.862 & 0.860 & 0.929 & 0.712 \\
+glass0 & DIV & 0.812 & 0.870 & 0.868 & 0.920 & 0.719 \\
+glass0 & DEN & 0.784 & 0.841 & 0.838 & 0.932 & 0.682 \\
+glass0 & BND & 0.795 & 0.855 & 0.854 & 0.920 & 0.691 \\
+glass1 & RND & 0.739 & 0.797 & 0.793 & 0.897 & 0.597 \\
+glass1 & DIV & 0.767 & 0.821 & 0.817 & 0.906 & 0.646 \\
+glass1 & DEN & 0.739 & 0.796 & 0.787 & 0.900 & 0.619 \\
+glass1 & BND & 0.764 & 0.816 & 0.814 & 0.901 & 0.632 \\
+glass2 & RND & 0.280 & 0.598 & 0.388 & 0.865 & 0.226 \\
+glass2 & DIV & 0.302 & 0.600 & 0.391 & 0.848 & 0.252 \\
+glass2 & DEN & 0.233 & 0.553 & 0.257 & 0.833 & 0.196 \\
+glass2 & BND & 0.293 & 0.598 & 0.389 & 0.857 & 0.242 \\
+glass4 & RND & 0.819 & 0.909 & 0.898 & 0.993 & 0.819 \\
+glass4 & DIV & 0.770 & 0.907 & 0.895 & 0.984 & 0.771 \\
+glass4 & DEN & 0.748 & 0.845 & 0.816 & 0.988 & 0.761 \\
+glass4 & BND & 0.848 & 0.912 & 0.901 & 0.989 & 0.848 \\
+glass5 & RND & 0.760 & 0.898 & 0.798 & 1.000 & 0.761 \\
+glass5 & DIV & 0.760 & 0.898 & 0.798 & 0.998 & 0.761 \\
+glass5 & DEN & 0.733 & 0.850 & 0.741 & 1.000 & 0.740 \\
+glass5 & BND & 0.760 & 0.898 & 0.798 & 1.000 & 0.761 \\
+glass6 & RND & 0.884 & 0.925 & 0.923 & 0.979 & 0.868 \\
+glass6 & DIV & 0.852 & 0.902 & 0.895 & 0.966 & 0.839 \\
+glass6 & DEN & 0.897 & 0.928 & 0.925 & 0.986 & 0.883 \\
+glass6 & BND & 0.890 & 0.939 & 0.938 & 0.967 & 0.873 \\
+haberman & RND & 0.371 & 0.569 & 0.537 & 0.632 & 0.136 \\
+haberman & DIV & 0.385 & 0.581 & 0.547 & 0.685 & 0.160 \\
+haberman & DEN & 0.366 & 0.572 & 0.528 & 0.657 & 0.149 \\
+haberman & BND & 0.403 & 0.595 & 0.560 & 0.668 & 0.195 \\
+iris0 & RND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+iris0 & DIV & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+iris0 & DEN & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+iris0 & BND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+new-thyroid1 & RND & 0.923 & 0.940 & 0.937 & 0.998 & 0.913 \\
+new-thyroid1 & DIV & 0.941 & 0.954 & 0.953 & 0.999 & 0.931 \\
+new-thyroid1 & DEN & 0.941 & 0.954 & 0.953 & 0.999 & 0.931 \\
+new-thyroid1 & BND & 0.923 & 0.940 & 0.937 & 0.999 & 0.913 \\
+new-thyroid2 & RND & 0.941 & 0.954 & 0.953 & 0.998 & 0.932 \\
+new-thyroid2 & DIV & 0.941 & 0.954 & 0.953 & 0.998 & 0.931 \\
+new-thyroid2 & DEN & 0.954 & 0.957 & 0.955 & 0.999 & 0.948 \\
+new-thyroid2 & BND & 0.927 & 0.952 & 0.950 & 0.997 & 0.916 \\
+page-blocks-1-3\_vs\_4 & RND & 0.978 & 0.980 & 0.979 & 1.000 & 0.978 \\
+page-blocks-1-3\_vs\_4 & DIV & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+page-blocks-1-3\_vs\_4 & DEN & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+page-blocks-1-3\_vs\_4 & BND & 0.978 & 0.980 & 0.979 & 1.000 & 0.978 \\
+page-blocks0 & RND & 0.844 & 0.952 & 0.952 & 0.990 & 0.830 \\
+page-blocks0 & DIV & 0.850 & 0.949 & 0.949 & 0.990 & 0.835 \\
+page-blocks0 & DEN & 0.881 & 0.938 & 0.937 & 0.990 & 0.868 \\
+page-blocks0 & BND & 0.845 & 0.947 & 0.947 & 0.989 & 0.830 \\
+pima & RND & 0.661 & 0.739 & 0.737 & 0.825 & 0.467 \\
+pima & DIV & 0.649 & 0.729 & 0.727 & 0.817 & 0.450 \\
+pima & DEN & 0.656 & 0.735 & 0.733 & 0.821 & 0.465 \\
+pima & BND & 0.666 & 0.742 & 0.741 & 0.820 & 0.471 \\
+segment0 & RND & 0.994 & 0.998 & 0.998 & 1.000 & 0.993 \\
+segment0 & DIV & 0.995 & 0.998 & 0.998 & 1.000 & 0.995 \\
+segment0 & DEN & 0.991 & 0.993 & 0.993 & 1.000 & 0.989 \\
+segment0 & BND & 0.994 & 0.998 & 0.998 & 1.000 & 0.993 \\
+shuttle-c0-vs-c4 & RND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+shuttle-c0-vs-c4 & DIV & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+shuttle-c0-vs-c4 & DEN & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+shuttle-c0-vs-c4 & BND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+shuttle-c2-vs-c4 & RND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+shuttle-c2-vs-c4 & DIV & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+shuttle-c2-vs-c4 & DEN & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+shuttle-c2-vs-c4 & BND & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
+vehicle0 & RND & 0.952 & 0.979 & 0.979 & 0.996 & 0.937 \\
+vehicle0 & DIV & 0.949 & 0.975 & 0.975 & 0.995 & 0.933 \\
+vehicle0 & DEN & 0.943 & 0.968 & 0.968 & 0.996 & 0.926 \\
+vehicle0 & BND & 0.940 & 0.972 & 0.972 & 0.995 & 0.921 \\
+vehicle1 & RND & 0.591 & 0.731 & 0.723 & 0.850 & 0.440 \\
+vehicle1 & DIV & 0.602 & 0.739 & 0.732 & 0.854 & 0.455 \\
+vehicle1 & DEN & 0.571 & 0.713 & 0.698 & 0.846 & 0.425 \\
+vehicle1 & BND & 0.587 & 0.727 & 0.719 & 0.856 & 0.436 \\
+vehicle2 & RND & 0.973 & 0.985 & 0.984 & 0.999 & 0.964 \\
+vehicle2 & DIV & 0.977 & 0.986 & 0.986 & 0.999 & 0.969 \\
+vehicle2 & DEN & 0.979 & 0.985 & 0.985 & 0.999 & 0.972 \\
+vehicle2 & BND & 0.966 & 0.979 & 0.979 & 0.999 & 0.954 \\
+vehicle3 & RND & 0.593 & 0.732 & 0.724 & 0.870 & 0.451 \\
+vehicle3 & DIV & 0.596 & 0.735 & 0.725 & 0.866 & 0.455 \\
+vehicle3 & DEN & 0.542 & 0.694 & 0.675 & 0.863 & 0.391 \\
+vehicle3 & BND & 0.617 & 0.748 & 0.741 & 0.868 & 0.481 \\
+vowel0 & RND & 0.952 & 0.971 & 0.968 & 0.999 & 0.949 \\
+vowel0 & DIV & 0.944 & 0.965 & 0.962 & 0.999 & 0.943 \\
+vowel0 & DEN & 0.949 & 0.966 & 0.962 & 0.999 & 0.949 \\
+vowel0 & BND & 0.952 & 0.971 & 0.968 & 0.999 & 0.949 \\
+wisconsin & RND & 0.959 & 0.972 & 0.972 & 0.993 & 0.937 \\
+wisconsin & DIV & 0.963 & 0.975 & 0.975 & 0.991 & 0.943 \\
+wisconsin & DEN & 0.961 & 0.973 & 0.973 & 0.993 & 0.940 \\
+wisconsin & BND & 0.961 & 0.973 & 0.973 & 0.991 & 0.940 \\
+yeast-0-5-6-7-9\_vs\_4 & RND & 0.533 & 0.740 & 0.707 & 0.894 & 0.493 \\
+yeast-0-5-6-7-9\_vs\_4 & DIV & 0.546 & 0.764 & 0.740 & 0.901 & 0.502 \\
+yeast-0-5-6-7-9\_vs\_4 & DEN & 0.547 & 0.744 & 0.703 & 0.901 & 0.516 \\
+yeast-0-5-6-7-9\_vs\_4 & BND & 0.539 & 0.750 & 0.711 & 0.904 & 0.503 \\
+yeast-1-2-8-9\_vs\_7 & RND & 0.231 & 0.605 & 0.462 & 0.732 & 0.213 \\
+yeast-1-2-8-9\_vs\_7 & DIV & 0.208 & 0.589 & 0.437 & 0.729 & 0.188 \\
+yeast-1-2-8-9\_vs\_7 & DEN & 0.151 & 0.557 & 0.323 & 0.785 & 0.131 \\
+yeast-1-2-8-9\_vs\_7 & BND & 0.165 & 0.557 & 0.324 & 0.776 & 0.149 \\
+yeast-1-4-5-8\_vs\_7 & RND & 0.107 & 0.531 & 0.194 & 0.697 & 0.097 \\
+yeast-1-4-5-8\_vs\_7 & DIV & 0.120 & 0.546 & 0.318 & 0.678 & 0.083 \\
+yeast-1-4-5-8\_vs\_7 & DEN & 0.112 & 0.533 & 0.241 & 0.702 & 0.084 \\
+yeast-1-4-5-8\_vs\_7 & BND & 0.113 & 0.537 & 0.241 & 0.701 & 0.089 \\
+yeast-1\_vs\_7 & RND & 0.252 & 0.597 & 0.412 & 0.821 & 0.216 \\
+yeast-1\_vs\_7 & DIV & 0.374 & 0.673 & 0.612 & 0.811 & 0.333 \\
+yeast-1\_vs\_7 & DEN & 0.312 & 0.630 & 0.517 & 0.799 & 0.280 \\
+yeast-1\_vs\_7 & BND & 0.362 & 0.648 & 0.551 & 0.822 & 0.331 \\
+yeast-2\_vs\_4 & RND & 0.736 & 0.871 & 0.866 & 0.980 & 0.711 \\
+yeast-2\_vs\_4 & DIV & 0.720 & 0.869 & 0.864 & 0.979 & 0.691 \\
+yeast-2\_vs\_4 & DEN & 0.753 & 0.850 & 0.838 & 0.984 & 0.733 \\
+yeast-2\_vs\_4 & BND & 0.747 & 0.874 & 0.868 & 0.982 & 0.722 \\
+yeast-2\_vs\_8 & RND & 0.481 & 0.738 & 0.689 & 0.879 & 0.469 \\
+yeast-2\_vs\_8 & DIV & 0.513 & 0.763 & 0.720 & 0.892 & 0.509 \\
+yeast-2\_vs\_8 & DEN & 0.611 & 0.771 & 0.726 & 0.897 & 0.630 \\
+yeast-2\_vs\_8 & BND & 0.592 & 0.770 & 0.725 & 0.925 & 0.602 \\
+yeast1 & RND & 0.608 & 0.725 & 0.717 & 0.806 & 0.443 \\
+yeast1 & DIV & 0.617 & 0.732 & 0.726 & 0.806 & 0.455 \\
+yeast1 & DEN & 0.597 & 0.717 & 0.705 & 0.811 & 0.437 \\
+yeast1 & BND & 0.616 & 0.731 & 0.722 & 0.814 & 0.457 \\
+yeast3 & RND & 0.789 & 0.905 & 0.903 & 0.972 & 0.763 \\
+yeast3 & DIV & 0.774 & 0.900 & 0.897 & 0.961 & 0.747 \\
+yeast3 & DEN & 0.748 & 0.844 & 0.833 & 0.969 & 0.721 \\
+yeast3 & BND & 0.774 & 0.895 & 0.892 & 0.966 & 0.747 \\
+yeast4 & RND & 0.338 & 0.690 & 0.618 & 0.917 & 0.320 \\
+yeast4 & DIV & 0.386 & 0.720 & 0.662 & 0.915 & 0.376 \\
+yeast4 & DEN & 0.402 & 0.706 & 0.635 & 0.916 & 0.386 \\
+yeast4 & BND & 0.411 & 0.723 & 0.664 & 0.911 & 0.394 \\
+yeast5 & RND & 0.769 & 0.915 & 0.911 & 0.992 & 0.768 \\
+yeast5 & DIV & 0.762 & 0.915 & 0.911 & 0.992 & 0.761 \\
+yeast5 & DEN & 0.754 & 0.861 & 0.849 & 0.991 & 0.751 \\
+yeast5 & BND & 0.764 & 0.915 & 0.912 & 0.993 & 0.762 \\
+yeast6 & RND & 0.513 & 0.792 & 0.752 & 0.917 & 0.510 \\
+yeast6 & DIV & 0.468 & 0.789 & 0.750 & 0.930 & 0.468 \\
+yeast6 & DEN & 0.548 & 0.767 & 0.718 & 0.903 & 0.548 \\
+yeast6 & BND & 0.486 & 0.778 & 0.728 & 0.913 & 0.488 \\
+\end{longtable}
+\endgroup
+\clearpage
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{llllrr}
+\caption{Historical BND minus other selectors and SMOTE: 60 adjusted comparisons}\label{tab:s4}\\
+\toprule
+Classifier & Metric & Comparator & Difference & W/T/L & Holm $p$ \\
+\midrule
+\endfirsthead
+\toprule
+Classifier & Metric & Comparator & Difference & W/T/L & Holm $p$ \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+SVM\_RBF & F1 & HIST\_RND & +0.0201 & 21/9/14 & 1.0000 \\
+SVM\_RBF & F1 & HIST\_DEN & -0.0211 & 15/5/24 & 1.0000 \\
+SVM\_RBF & F1 & HIST\_DIV & +0.0102 & 14/9/21 & 1.0000 \\
+SVM\_RBF & F1 & SMOTE & +0.0068 & 18/8/18 & 1.0000 \\
+SVM\_RBF & BalancedAccuracy & HIST\_RND & +0.0017 & 18/9/17 & 1.0000 \\
+SVM\_RBF & BalancedAccuracy & HIST\_DEN & +0.0069 & 27/5/12 & 0.8790 \\
+SVM\_RBF & BalancedAccuracy & HIST\_DIV & -0.0071 & 11/9/24 & 1.0000 \\
+SVM\_RBF & BalancedAccuracy & SMOTE & -0.0034 & 19/8/17 & 1.0000 \\
+SVM\_RBF & GMean & HIST\_RND & -0.0021 & 17/9/18 & 1.0000 \\
+SVM\_RBF & GMean & HIST\_DEN & +0.0088 & 29/5/10 & 0.4330 \\
+SVM\_RBF & GMean & HIST\_DIV & -0.0140 & 11/9/24 & 1.0000 \\
+SVM\_RBF & GMean & SMOTE & -0.0094 & 18/8/18 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & HIST\_RND & +0.0007 & 13/8/23 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & HIST\_DEN & -0.0026 & 15/5/24 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & HIST\_DIV & -0.0034 & 11/8/25 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & SMOTE & -0.0028 & 13/7/24 & 1.0000 \\
+SVM\_RBF & MCC & HIST\_RND & +0.0173 & 20/9/15 & 1.0000 \\
+SVM\_RBF & MCC & HIST\_DEN & -0.0236 & 15/5/24 & 1.0000 \\
+SVM\_RBF & MCC & HIST\_DIV & +0.0035 & 13/9/22 & 1.0000 \\
+SVM\_RBF & MCC & SMOTE & +0.0028 & 15/8/21 & 1.0000 \\
+KNN & F1 & HIST\_RND & +0.0137 & 23/9/12 & 1.0000 \\
+KNN & F1 & HIST\_DEN & -0.0101 & 17/4/23 & 1.0000 \\
+KNN & F1 & HIST\_DIV & +0.0185 & 27/5/12 & 0.8678 \\
+KNN & F1 & SMOTE & +0.0120 & 22/4/18 & 1.0000 \\
+KNN & BalancedAccuracy & HIST\_RND & +0.0002 & 21/8/15 & 1.0000 \\
+KNN & BalancedAccuracy & HIST\_DEN & +0.0132 & 30/4/10 & 0.0418 \\
+KNN & BalancedAccuracy & HIST\_DIV & +0.0023 & 22/5/17 & 1.0000 \\
+KNN & BalancedAccuracy & SMOTE & +0.0019 & 23/5/16 & 1.0000 \\
+KNN & GMean & HIST\_RND & -0.0016 & 20/8/16 & 1.0000 \\
+KNN & GMean & HIST\_DEN & +0.0152 & 30/4/10 & 0.0499 \\
+KNN & GMean & HIST\_DIV & +0.0004 & 21/5/18 & 1.0000 \\
+KNN & GMean & SMOTE & -0.0001 & 22/4/18 & 1.0000 \\
+KNN & ROC\_AUC & HIST\_RND & -0.0019 & 16/8/20 & 1.0000 \\
+KNN & ROC\_AUC & HIST\_DEN & +0.0004 & 21/5/18 & 1.0000 \\
+KNN & ROC\_AUC & HIST\_DIV & -0.0018 & 14/8/22 & 1.0000 \\
+KNN & ROC\_AUC & SMOTE & -0.0009 & 16/7/21 & 1.0000 \\
+KNN & MCC & HIST\_RND & +0.0116 & 23/8/13 & 1.0000 \\
+KNN & MCC & HIST\_DEN & -0.0088 & 17/4/23 & 1.0000 \\
+KNN & MCC & HIST\_DIV & +0.0158 & 27/5/12 & 1.0000 \\
+KNN & MCC & SMOTE & +0.0102 & 21/4/19 & 1.0000 \\
+RandomForest & F1 & HIST\_RND & +0.0069 & 18/9/17 & 1.0000 \\
+RandomForest & F1 & HIST\_DEN & +0.0054 & 21/5/18 & 1.0000 \\
+RandomForest & F1 & HIST\_DIV & -0.0013 & 16/5/23 & 1.0000 \\
+RandomForest & F1 & SMOTE & -0.0012 & 17/6/21 & 1.0000 \\
+RandomForest & BalancedAccuracy & HIST\_RND & +0.0020 & 16/9/19 & 1.0000 \\
+RandomForest & BalancedAccuracy & HIST\_DEN & +0.0126 & 30/4/10 & 0.0448 \\
+RandomForest & BalancedAccuracy & HIST\_DIV & -0.0059 & 11/6/27 & 0.5025 \\
+RandomForest & BalancedAccuracy & SMOTE & -0.0024 & 19/6/19 & 1.0000 \\
+RandomForest & GMean & HIST\_RND & +0.0014 & 18/9/17 & 1.0000 \\
+RandomForest & GMean & HIST\_DEN & +0.0184 & 28/5/11 & 0.0306 \\
+RandomForest & GMean & HIST\_DIV & -0.0177 & 12/5/27 & 0.3971 \\
+RandomForest & GMean & SMOTE & -0.0098 & 19/6/19 & 1.0000 \\
+RandomForest & ROC\_AUC & HIST\_RND & +0.0038 & 19/6/19 & 1.0000 \\
+RandomForest & ROC\_AUC & HIST\_DEN & +0.0010 & 19/7/18 & 1.0000 \\
+RandomForest & ROC\_AUC & HIST\_DIV & +0.0051 & 23/6/15 & 1.0000 \\
+RandomForest & ROC\_AUC & SMOTE & +0.0037 & 16/6/22 & 1.0000 \\
+RandomForest & MCC & HIST\_RND & +0.0074 & 17/8/19 & 1.0000 \\
+RandomForest & MCC & HIST\_DEN & +0.0019 & 22/4/18 & 1.0000 \\
+RandomForest & MCC & HIST\_DIV & -0.0010 & 18/5/21 & 1.0000 \\
+RandomForest & MCC & SMOTE & -0.0016 & 17/5/22 & 1.0000 \\
+\end{longtable}
+\endgroup
+\clearpage
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{lllllrr}
+\caption{Historical BND minus classical methods: 135 adjusted comparisons}\label{tab:s5}\\
+\toprule
+Classifier & Metric & Comparator & $n$ & Difference & W/T/L & Holm $p$ \\
+\midrule
+\endfirsthead
+\toprule
+Classifier & Metric & Comparator & $n$ & Difference & W/T/L & Holm $p$ \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+SVM\_RBF & F1 & Original & 44 & +0.0919 & 31/3/10 & 0.0565 \\
+SVM\_RBF & F1 & ROS & 44 & +0.0077 & 23/4/17 & 1.0000 \\
+SVM\_RBF & F1 & SMOTE & 44 & +0.0068 & 18/8/18 & 1.0000 \\
+SVM\_RBF & F1 & ADASYN & 41 & +0.0198 & 19/6/16 & 1.0000 \\
+SVM\_RBF & F1 & Borderline\_SMOTE1 & 37 & -0.0102 & 10/5/22 & 1.0000 \\
+SVM\_RBF & F1 & Borderline\_SMOTE2 & 37 & +0.0048 & 16/1/20 & 1.0000 \\
+SVM\_RBF & F1 & MWMOTE & 44 & +0.0132 & 20/9/15 & 1.0000 \\
+SVM\_RBF & F1 & G\_SMOTE & 44 & -0.0001 & 16/9/19 & 1.0000 \\
+SVM\_RBF & F1 & kmeans\_SMOTE & 29 & +0.0089 & 19/3/7 & 1.0000 \\
+SVM\_RBF & BalancedAccuracy & Original & 44 & +0.0893 & 38/3/3 & 0.0000 \\
+SVM\_RBF & BalancedAccuracy & ROS & 44 & -0.0089 & 21/6/17 & 1.0000 \\
+SVM\_RBF & BalancedAccuracy & SMOTE & 44 & -0.0034 & 19/8/17 & 1.0000 \\
+SVM\_RBF & BalancedAccuracy & ADASYN & 41 & -0.0019 & 17/6/18 & 1.0000 \\
+SVM\_RBF & BalancedAccuracy & Borderline\_SMOTE1 & 37 & +0.0127 & 20/6/11 & 1.0000 \\
+SVM\_RBF & BalancedAccuracy & Borderline\_SMOTE2 & 37 & +0.0090 & 20/1/16 & 1.0000 \\
+SVM\_RBF & BalancedAccuracy & MWMOTE & 44 & +0.0057 & 23/9/12 & 1.0000 \\
+SVM\_RBF & BalancedAccuracy & G\_SMOTE & 44 & +0.0003 & 17/9/18 & 1.0000 \\
+SVM\_RBF & BalancedAccuracy & kmeans\_SMOTE & 29 & +0.0314 & 22/3/4 & 0.0872 \\
+SVM\_RBF & GMean & Original & 44 & +0.2038 & 39/3/2 & 0.0000 \\
+SVM\_RBF & GMean & ROS & 44 & -0.0156 & 22/4/18 & 1.0000 \\
+SVM\_RBF & GMean & SMOTE & 44 & -0.0094 & 18/8/18 & 1.0000 \\
+SVM\_RBF & GMean & ADASYN & 41 & -0.0068 & 16/6/19 & 1.0000 \\
+SVM\_RBF & GMean & Borderline\_SMOTE1 & 37 & +0.0292 & 21/5/11 & 1.0000 \\
+SVM\_RBF & GMean & Borderline\_SMOTE2 & 37 & +0.0177 & 20/1/16 & 1.0000 \\
+SVM\_RBF & GMean & MWMOTE & 44 & +0.0087 & 22/9/13 & 1.0000 \\
+SVM\_RBF & GMean & G\_SMOTE & 44 & -0.0007 & 17/9/18 & 1.0000 \\
+SVM\_RBF & GMean & kmeans\_SMOTE & 29 & +0.0425 & 22/3/4 & 0.0596 \\
+SVM\_RBF & ROC\_AUC & Original & 44 & +0.0064 & 19/3/22 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & ROS & 44 & -0.0033 & 13/5/26 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & SMOTE & 44 & -0.0028 & 13/7/24 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & ADASYN & 41 & +0.0012 & 21/4/16 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & Borderline\_SMOTE1 & 37 & +0.0031 & 20/3/14 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & Borderline\_SMOTE2 & 37 & +0.0065 & 26/1/10 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & MWMOTE & 44 & +0.0027 & 25/5/14 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & G\_SMOTE & 44 & -0.0027 & 12/6/26 & 1.0000 \\
+SVM\_RBF & ROC\_AUC & kmeans\_SMOTE & 29 & -0.0022 & 14/2/13 & 1.0000 \\
+SVM\_RBF & MCC & Original & 44 & +0.0674 & 28/3/13 & 0.7288 \\
+SVM\_RBF & MCC & ROS & 44 & +0.0005 & 23/4/17 & 1.0000 \\
+SVM\_RBF & MCC & SMOTE & 44 & +0.0028 & 15/8/21 & 1.0000 \\
+SVM\_RBF & MCC & ADASYN & 41 & +0.0158 & 18/6/17 & 1.0000 \\
+SVM\_RBF & MCC & Borderline\_SMOTE1 & 37 & -0.0105 & 10/5/22 & 1.0000 \\
+SVM\_RBF & MCC & Borderline\_SMOTE2 & 37 & +0.0057 & 17/1/19 & 1.0000 \\
+SVM\_RBF & MCC & MWMOTE & 44 & +0.0129 & 20/9/15 & 1.0000 \\
+SVM\_RBF & MCC & G\_SMOTE & 44 & -0.0021 & 15/9/20 & 1.0000 \\
+SVM\_RBF & MCC & kmeans\_SMOTE & 29 & -0.0062 & 16/3/10 & 1.0000 \\
+KNN & F1 & Original & 44 & +0.0374 & 23/3/18 & 1.0000 \\
+KNN & F1 & ROS & 44 & +0.0018 & 21/4/19 & 1.0000 \\
+KNN & F1 & SMOTE & 44 & +0.0120 & 22/4/18 & 1.0000 \\
+KNN & F1 & ADASYN & 41 & +0.0235 & 27/3/11 & 0.0311 \\
+KNN & F1 & Borderline\_SMOTE1 & 37 & -0.0040 & 16/2/19 & 1.0000 \\
+KNN & F1 & Borderline\_SMOTE2 & 37 & +0.0054 & 20/0/17 & 1.0000 \\
+KNN & F1 & MWMOTE & 44 & +0.0051 & 19/5/20 & 1.0000 \\
+KNN & F1 & G\_SMOTE & 44 & +0.0022 & 17/5/22 & 1.0000 \\
+KNN & F1 & kmeans\_SMOTE & 29 & -0.0120 & 12/3/14 & 1.0000 \\
+KNN & BalancedAccuracy & Original & 44 & +0.0752 & 38/3/3 & 0.0000 \\
+KNN & BalancedAccuracy & ROS & 44 & +0.0132 & 30/4/10 & 0.0394 \\
+KNN & BalancedAccuracy & SMOTE & 44 & +0.0019 & 23/5/16 & 1.0000 \\
+KNN & BalancedAccuracy & ADASYN & 41 & +0.0015 & 21/3/17 & 1.0000 \\
+KNN & BalancedAccuracy & Borderline\_SMOTE1 & 37 & +0.0202 & 24/2/11 & 0.1241 \\
+KNN & BalancedAccuracy & Borderline\_SMOTE2 & 37 & +0.0237 & 31/0/6 & 0.0044 \\
+KNN & BalancedAccuracy & MWMOTE & 44 & +0.0081 & 23/5/16 & 1.0000 \\
+KNN & BalancedAccuracy & G\_SMOTE & 44 & +0.0053 & 25/6/13 & 1.0000 \\
+KNN & BalancedAccuracy & kmeans\_SMOTE & 29 & +0.0205 & 20/3/6 & 0.1168 \\
+KNN & GMean & Original & 44 & +0.1618 & 38/3/3 & 0.0000 \\
+KNN & GMean & ROS & 44 & +0.0206 & 29/4/11 & 0.0258 \\
+KNN & GMean & SMOTE & 44 & -0.0001 & 22/4/18 & 1.0000 \\
+KNN & GMean & ADASYN & 41 & -0.0014 & 21/3/17 & 1.0000 \\
+KNN & GMean & Borderline\_SMOTE1 & 37 & +0.0362 & 26/1/10 & 0.0502 \\
+KNN & GMean & Borderline\_SMOTE2 & 37 & +0.0401 & 30/0/7 & 0.0056 \\
+KNN & GMean & MWMOTE & 44 & +0.0132 & 23/5/16 & 1.0000 \\
+KNN & GMean & G\_SMOTE & 44 & +0.0070 & 23/5/16 & 1.0000 \\
+KNN & GMean & kmeans\_SMOTE & 29 & +0.0264 & 20/3/6 & 0.1092 \\
+KNN & ROC\_AUC & Original & 44 & +0.0105 & 23/3/18 & 1.0000 \\
+KNN & ROC\_AUC & ROS & 44 & +0.0136 & 27/6/11 & 0.0296 \\
+KNN & ROC\_AUC & SMOTE & 44 & -0.0009 & 16/7/21 & 1.0000 \\
+KNN & ROC\_AUC & ADASYN & 41 & -0.0008 & 23/4/14 & 1.0000 \\
+KNN & ROC\_AUC & Borderline\_SMOTE1 & 37 & +0.0086 & 21/1/15 & 1.0000 \\
+KNN & ROC\_AUC & Borderline\_SMOTE2 & 37 & +0.0089 & 26/0/11 & 1.0000 \\
+KNN & ROC\_AUC & MWMOTE & 44 & +0.0072 & 23/5/16 & 1.0000 \\
+KNN & ROC\_AUC & G\_SMOTE & 44 & +0.0033 & 24/7/13 & 1.0000 \\
+KNN & ROC\_AUC & kmeans\_SMOTE & 29 & +0.0003 & 10/4/15 & 1.0000 \\
+KNN & MCC & Original & 44 & +0.0255 & 25/3/16 & 1.0000 \\
+KNN & MCC & ROS & 44 & +0.0064 & 21/4/19 & 1.0000 \\
+KNN & MCC & SMOTE & 44 & +0.0102 & 21/4/19 & 1.0000 \\
+KNN & MCC & ADASYN & 41 & +0.0214 & 27/3/11 & 0.0563 \\
+KNN & MCC & Borderline\_SMOTE1 & 37 & +0.0024 & 17/1/19 & 1.0000 \\
+KNN & MCC & Borderline\_SMOTE2 & 37 & +0.0126 & 24/0/13 & 1.0000 \\
+KNN & MCC & MWMOTE & 44 & +0.0068 & 20/5/19 & 1.0000 \\
+KNN & MCC & G\_SMOTE & 44 & +0.0034 & 20/5/19 & 1.0000 \\
+KNN & MCC & kmeans\_SMOTE & 29 & -0.0168 & 12/3/14 & 1.0000 \\
+RandomForest & F1 & Original & 44 & +0.0618 & 31/3/10 & 0.0106 \\
+RandomForest & F1 & ROS & 44 & +0.0131 & 24/3/17 & 1.0000 \\
+RandomForest & F1 & SMOTE & 44 & -0.0012 & 17/6/21 & 1.0000 \\
+RandomForest & F1 & ADASYN & 41 & +0.0144 & 23/5/13 & 1.0000 \\
+RandomForest & F1 & Borderline\_SMOTE1 & 37 & +0.0087 & 22/0/15 & 1.0000 \\
+RandomForest & F1 & Borderline\_SMOTE2 & 37 & +0.0217 & 25/0/12 & 1.0000 \\
+RandomForest & F1 & MWMOTE & 44 & +0.0198 & 27/7/10 & 1.0000 \\
+RandomForest & F1 & G\_SMOTE & 44 & +0.0003 & 15/6/23 & 1.0000 \\
+RandomForest & F1 & kmeans\_SMOTE & 29 & +0.0082 & 14/3/12 & 1.0000 \\
+RandomForest & BalancedAccuracy & Original & 44 & +0.0468 & 37/3/4 & 0.0000 \\
+RandomForest & BalancedAccuracy & ROS & 44 & +0.0180 & 31/4/9 & 0.0508 \\
+RandomForest & BalancedAccuracy & SMOTE & 44 & -0.0024 & 19/6/19 & 1.0000 \\
+RandomForest & BalancedAccuracy & ADASYN & 41 & +0.0021 & 20/3/18 & 1.0000 \\
+RandomForest & BalancedAccuracy & Borderline\_SMOTE1 & 37 & +0.0122 & 28/0/9 & 0.3031 \\
+RandomForest & BalancedAccuracy & Borderline\_SMOTE2 & 37 & +0.0153 & 26/1/10 & 0.3810 \\
+RandomForest & BalancedAccuracy & MWMOTE & 44 & +0.0172 & 27/7/10 & 0.0700 \\
+RandomForest & BalancedAccuracy & G\_SMOTE & 44 & +0.0034 & 21/6/17 & 1.0000 \\
+RandomForest & BalancedAccuracy & kmeans\_SMOTE & 29 & +0.0133 & 18/4/7 & 0.7693 \\
+RandomForest & GMean & Original & 44 & +0.1011 & 37/3/4 & 0.0000 \\
+RandomForest & GMean & ROS & 44 & +0.0358 & 31/3/10 & 0.0348 \\
+RandomForest & GMean & SMOTE & 44 & -0.0098 & 19/6/19 & 1.0000 \\
+RandomForest & GMean & ADASYN & 41 & -0.0007 & 18/5/18 & 1.0000 \\
+RandomForest & GMean & Borderline\_SMOTE1 & 37 & +0.0294 & 28/0/9 & 0.2922 \\
+RandomForest & GMean & Borderline\_SMOTE2 & 37 & +0.0321 & 28/0/9 & 0.2228 \\
+RandomForest & GMean & MWMOTE & 44 & +0.0323 & 27/7/10 & 0.0534 \\
+RandomForest & GMean & G\_SMOTE & 44 & +0.0104 & 23/6/15 & 1.0000 \\
+RandomForest & GMean & kmeans\_SMOTE & 29 & +0.0223 & 19/3/7 & 0.5324 \\
+RandomForest & ROC\_AUC & Original & 44 & +0.0056 & 22/3/19 & 1.0000 \\
+RandomForest & ROC\_AUC & ROS & 44 & +0.0039 & 20/5/19 & 1.0000 \\
+RandomForest & ROC\_AUC & SMOTE & 44 & +0.0037 & 16/6/22 & 1.0000 \\
+RandomForest & ROC\_AUC & ADASYN & 41 & +0.0019 & 20/3/18 & 1.0000 \\
+RandomForest & ROC\_AUC & Borderline\_SMOTE1 & 37 & +0.0017 & 15/2/20 & 1.0000 \\
+RandomForest & ROC\_AUC & Borderline\_SMOTE2 & 37 & +0.0054 & 18/1/18 & 1.0000 \\
+RandomForest & ROC\_AUC & MWMOTE & 44 & +0.0049 & 23/5/16 & 1.0000 \\
+RandomForest & ROC\_AUC & G\_SMOTE & 44 & -0.0000 & 17/5/22 & 1.0000 \\
+RandomForest & ROC\_AUC & kmeans\_SMOTE & 29 & +0.0005 & 10/4/15 & 1.0000 \\
+RandomForest & MCC & Original & 44 & +0.0440 & 29/3/12 & 0.2922 \\
+RandomForest & MCC & ROS & 44 & +0.0049 & 23/3/18 & 1.0000 \\
+RandomForest & MCC & SMOTE & 44 & -0.0016 & 17/5/22 & 1.0000 \\
+RandomForest & MCC & ADASYN & 41 & +0.0162 & 25/3/13 & 1.0000 \\
+RandomForest & MCC & Borderline\_SMOTE1 & 37 & +0.0047 & 22/0/15 & 1.0000 \\
+RandomForest & MCC & Borderline\_SMOTE2 & 37 & +0.0188 & 23/0/14 & 1.0000 \\
+RandomForest & MCC & MWMOTE & 44 & +0.0150 & 26/7/11 & 1.0000 \\
+RandomForest & MCC & G\_SMOTE & 44 & -0.0024 & 13/5/26 & 1.0000 \\
+RandomForest & MCC & kmeans\_SMOTE & 29 & +0.0021 & 14/3/12 & 1.0000 \\
+\end{longtable}
+\endgroup
+\clearpage
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{llllrr}
+\caption{External G-Mean: historical BND and standalone SMOTE}\label{tab:s6}\\
+\toprule
+Source & Classifier & Protocol & BND & SMOTE & Difference \\
+\midrule
+\endfirsthead
+\toprule
+Source & Classifier & Protocol & BND & SMOTE & Difference \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+MagicTelescope & KNN & Earlier external & 0.8071 & 0.8053 & +0.0018 \\
+MagicTelescope & RandomForest & Earlier external & 0.8575 & 0.8601 & -0.0026 \\
+MagicTelescope & SVM\_RBF & Earlier external & 0.8455 & 0.8447 & +0.0009 \\
+mammography & KNN & Earlier external & 0.9090 & 0.8971 & +0.0118 \\
+mammography & RandomForest & Earlier external & 0.8638 & 0.8679 & -0.0041 \\
+mammography & SVM\_RBF & Earlier external & 0.8991 & 0.8975 & +0.0015 \\
+satimage & KNN & Earlier external & 0.9028 & 0.9064 & -0.0037 \\
+satimage & RandomForest & Earlier external & 0.8326 & 0.8146 & +0.0180 \\
+satimage & SVM\_RBF & Earlier external & 0.8917 & 0.8931 & -0.0014 \\
+musk & KNN & New external & 0.9183 & 0.9234 & -0.0051 \\
+musk & RandomForest & New external & 0.9457 & 0.9493 & -0.0036 \\
+musk & SVM\_RBF & New external & 0.9822 & 0.9754 & +0.0067 \\
+ozone-level-8hr & KNN & New external & 0.8023 & 0.8187 & -0.0164 \\
+ozone-level-8hr & RandomForest & New external & 0.6759 & 0.6717 & +0.0042 \\
+ozone-level-8hr & SVM\_RBF & New external & 0.7847 & 0.7985 & -0.0138 \\
+phoneme & KNN & New external & 0.8690 & 0.8695 & -0.0004 \\
+phoneme & RandomForest & New external & 0.8987 & 0.8958 & +0.0029 \\
+phoneme & SVM\_RBF & New external & 0.8344 & 0.8366 & -0.0022 \\
+seismic-bumps & KNN & New external & 0.6013 & 0.5879 & +0.0135 \\
+seismic-bumps & RandomForest & New external & 0.5204 & 0.4971 & +0.0233 \\
+seismic-bumps & SVM\_RBF & New external & 0.6215 & 0.6328 & -0.0113 \\
+\end{longtable}
+\endgroup
+\clearpage
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{lllrr}
+\caption{Pre-fixed adaptive choice on four new sources: outer-fold G-Mean}\label{tab:s7}\\
+\toprule
+Source & Classifier & Adaptive & SMOTE & Difference \\
+\midrule
+\endfirsthead
+\toprule
+Source & Classifier & Adaptive & SMOTE & Difference \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+musk & KNN & 0.9215 & 0.9234 & -0.0020 \\
+musk & RandomForest & 0.9467 & 0.9493 & -0.0026 \\
+musk & SVM\_RBF & 0.9816 & 0.9754 & +0.0061 \\
+ozone-level-8hr & KNN & 0.8021 & 0.8187 & -0.0166 \\
+ozone-level-8hr & RandomForest & 0.6621 & 0.6717 & -0.0096 \\
+ozone-level-8hr & SVM\_RBF & 0.7949 & 0.7985 & -0.0036 \\
+phoneme & KNN & 0.8691 & 0.8695 & -0.0004 \\
+phoneme & RandomForest & 0.8966 & 0.8958 & +0.0008 \\
+phoneme & SVM\_RBF & 0.8344 & 0.8366 & -0.0022 \\
+seismic-bumps & KNN & 0.5935 & 0.5879 & +0.0056 \\
+seismic-bumps & RandomForest & 0.4837 & 0.4971 & -0.0134 \\
+seismic-bumps & SVM\_RBF & 0.6389 & 0.6328 & +0.0061 \\
+\end{longtable}
+\endgroup
+\clearpage
+
+
+\end{document}

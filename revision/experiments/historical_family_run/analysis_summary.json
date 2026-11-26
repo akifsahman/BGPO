@@ -1,0 +1,35 @@
+{
+  "datasets": 44,
+  "folds": 220,
+  "classifier_rows": 2640,
+  "Holm60_significant": [
+    {
+      "classifier": "KNN",
+      "metric": "BalancedAccuracy",
+      "comparator": "HIST_DEN",
+      "mean_difference": 0.01318254933179837,
+      "p_holm_all60": 0.04182937925110426
+    },
+    {
+      "classifier": "KNN",
+      "metric": "GMean",
+      "comparator": "HIST_DEN",
+      "mean_difference": 0.01520108073233975,
+      "p_holm_all60": 0.04991181139364805
+    },
+    {
+      "classifier": "RandomForest",
+      "metric": "BalancedAccuracy",
+      "comparator": "HIST_DEN",
+      "mean_difference": 0.012597752987899962,
+      "p_holm_all60": 0.044761427443724223
+    },
+    {
+      "classifier": "RandomForest",
+      "metric": "GMean",
+      "comparator": "HIST_DEN",
+      "mean_difference": 0.018432423514310525,
+      "p_holm_all60": 0.030635472223048354
+    }
+  ]
+}

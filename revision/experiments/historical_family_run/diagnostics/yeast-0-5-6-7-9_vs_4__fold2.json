@@ -1,0 +1,13 @@
+{
+  "dataset": "yeast-0-5-6-7-9_vs_4",
+  "fold": 2,
+  "budget": 340,
+  "pool_size": 1360,
+  "duplicate_excess": {
+    "HIST_RND": 8,
+    "HIST_DEN": 9,
+    "HIST_DIV": 7,
+    "HIST_BND": 9
+  },
+  "historical_BND_reference_match": true
+}

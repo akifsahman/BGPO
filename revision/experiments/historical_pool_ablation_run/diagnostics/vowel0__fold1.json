@@ -1,0 +1,98 @@
+{
+  "dataset": "vowel0",
+  "fold": 1,
+  "budget": 646,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 646,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.001325791934505105
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 646,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.001883834134787321
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 646,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.043190957978367805
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 646,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0008511249907314777
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 646,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 646,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 646,
+      "duplicate_excess": 0
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 646,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 1938,
+      "duplicate_excess": 0
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 1938,
+      "duplicate_excess": 17
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 1938,
+      "duplicate_excess": 15
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 1938,
+      "duplicate_excess": 1
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 2584,
+      "duplicate_excess": 7
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

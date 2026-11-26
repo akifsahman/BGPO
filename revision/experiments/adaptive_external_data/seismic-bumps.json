@@ -1,0 +1,37 @@
+{
+  "requested_name": "seismic-bumps",
+  "openml_data_id": 46956,
+  "openml_source_name": "seismic-bumps",
+  "openml_version": "4",
+  "source_url": "https://www.openml.org/d/46956",
+  "sha256_csv": "79bda068dbc7a0c973790acb196df548ec18ec5aa7844e71da9b2c8b6e32a84a",
+  "observations": 2584,
+  "numeric_features": 11,
+  "excluded_wholly_nonnumeric_columns": [
+    "seismic",
+    "seismoacoustic",
+    "shift",
+    "ghazard"
+  ],
+  "original_target_counts": {
+    "No": 2414,
+    "Yes": 170
+  },
+  "minority_original_label": "Yes",
+  "minority_count": 170,
+  "majority_count": 2414,
+  "missing_feature_cells": 0,
+  "feature_names": [
+    "genergy",
+    "gpuls",
+    "gdenergy",
+    "gdpuls",
+    "nbumps",
+    "nbumps2",
+    "nbumps3",
+    "nbumps4",
+    "nbumps5",
+    "energy",
+    "maxenergy"
+  ]
+}

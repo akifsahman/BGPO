@@ -1,0 +1,98 @@
+{
+  "dataset": "glass2",
+  "fold": 5,
+  "budget": 144,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 144,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0005932080093771219
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 144,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.000768125057220459
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 144,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.004938874859362841
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 144,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0005940420087426901
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 144,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 144,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 144,
+      "duplicate_excess": 49
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 144,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 432,
+      "duplicate_excess": 8
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 432,
+      "duplicate_excess": 13
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 432,
+      "duplicate_excess": 8
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 432,
+      "duplicate_excess": 11
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 576,
+      "duplicate_excess": 8
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

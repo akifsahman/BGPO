@@ -1,0 +1,53 @@
+{
+  "dataset": "satimage",
+  "fold": 5,
+  "budget": 4144,
+  "pool_size": 16576,
+  "generators": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 4144,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.006153999827802181
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 4144,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.010401166044175625
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 4144,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 1.7847563338000327
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 4144,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.03496504109352827
+    }
+  },
+  "selected_intersection": 1395,
+  "reference_metric_match": true,
+  "seconds": 9.048552541993558
+}

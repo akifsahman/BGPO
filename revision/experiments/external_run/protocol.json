@@ -1,0 +1,29 @@
+{
+  "source": "external_validation_protocol.md (frozen before outcomes)",
+  "dataset_ids": {
+    "mammography": 310,
+    "MagicTelescope": 1120,
+    "satimage": 182
+  },
+  "folds": "StratifiedKFold(5, shuffle=True, random_state=20261125)",
+  "preprocessing": "training-only median imputation, StandardScaler",
+  "methods": [
+    "Original",
+    "SMOTE",
+    "BND",
+    "DIV",
+    "BND_QUOTA"
+  ],
+  "classifiers": {
+    "SVM_RBF": "SVC(random_state=42)",
+    "KNN": "KNeighborsClassifier()",
+    "RandomForest": "RandomForestClassifier(n_jobs=1, random_state=42)"
+  },
+  "metrics": [
+    "F1",
+    "BalancedAccuracy",
+    "GMean",
+    "ROC_AUC",
+    "MCC"
+  ]
+}

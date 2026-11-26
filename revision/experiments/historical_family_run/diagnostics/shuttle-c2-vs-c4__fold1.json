@@ -1,0 +1,13 @@
+{
+  "dataset": "shuttle-c2-vs-c4",
+  "fold": 1,
+  "budget": 95,
+  "pool_size": 285,
+  "duplicate_excess": {
+    "HIST_RND": 32,
+    "HIST_DEN": 40,
+    "HIST_DIV": 18,
+    "HIST_BND": 32
+  },
+  "historical_BND_reference_match": true
+}

@@ -1,0 +1,7 @@
+# Exploratory generator-pool diagnosis for the actual notebook BND rule
+
+Frozen before running this analysis on 25 November 2026. The historical 10-neighbor class-proportion boundary score, `RandomState(42)` weighted selection, exact final budget, original training/test folds, train-fitted preprocessing, and classifier templates are unchanged. Compare four single-generator pools, four leave-one-generator-out pools, and the complete four-generator pool. A pool with fewer candidates than the exact budget is unavailable, never filled from another source. The original full-pool historical BND metrics are recomputed and checked on every fold.
+
+Primary diagnostic: full pool versus SMOTE-only pool on dataset-mean G-Mean for each classifier; all other pool contrasts and metrics are exploratory. The SMOTE-only pool has exactly the augmentation budget, so it selects all its candidates; its historical random append order may change seeded Random Forest outcomes relative to standalone SMOTE. Therefore, for Random Forest, recompute both FULL and SMOTE-only subsets appended in canonical pool-index order as a row-order sensitivity. Do not interpret a Random Forest contrast as a pure generator-composition effect unless its direction is stable under this check.
+
+The same 44 KEEL results were viewed in earlier analyses. Any preferred reduced pool inferred here is a development choice and requires independent validation on genuinely unseen sources before a superiority claim.

@@ -1,0 +1,13 @@
+{
+  "dataset": "pima",
+  "fold": 1,
+  "budget": 186,
+  "pool_size": 744,
+  "duplicate_excess": {
+    "HIST_RND": 6,
+    "HIST_DEN": 3,
+    "HIST_DIV": 4,
+    "HIST_BND": 2
+  },
+  "historical_BND_reference_match": true
+}

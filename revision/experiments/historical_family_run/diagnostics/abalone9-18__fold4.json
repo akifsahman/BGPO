@@ -1,0 +1,13 @@
+{
+  "dataset": "abalone9-18",
+  "fold": 4,
+  "budget": 517,
+  "pool_size": 2068,
+  "duplicate_excess": {
+    "HIST_RND": 16,
+    "HIST_DEN": 30,
+    "HIST_DIV": 33,
+    "HIST_BND": 18
+  },
+  "historical_BND_reference_match": true
+}

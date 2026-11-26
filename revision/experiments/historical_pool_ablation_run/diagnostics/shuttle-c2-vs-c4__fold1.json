@@ -1,0 +1,97 @@
+{
+  "dataset": "shuttle-c2-vs-c4",
+  "fold": 1,
+  "budget": 95,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 95,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 3
+      },
+      "seconds": 0.0007958749774843454
+    },
+    "ADASYN": {
+      "status": "empty",
+      "candidates": 0,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 3
+      },
+      "seconds": 0.00046300003305077553
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 95,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 3,
+        "k2": 3,
+        "k3": 3
+      },
+      "seconds": 0.0024301251396536827
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 95,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 3
+      },
+      "seconds": 0.001159332925453782
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 95,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "pool_short",
+      "size": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 95,
+      "duplicate_excess": 92
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 95,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 190,
+      "duplicate_excess": 46
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 285,
+      "duplicate_excess": 32
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 190,
+      "duplicate_excess": 9
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 190,
+      "duplicate_excess": 43
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 285,
+      "duplicate_excess": 32
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

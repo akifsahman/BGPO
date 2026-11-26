@@ -1,0 +1,13 @@
+{
+  "dataset": "ecoli-0_vs_1",
+  "fold": 1,
+  "budget": 52,
+  "pool_size": 208,
+  "duplicate_excess": {
+    "HIST_RND": 0,
+    "HIST_DEN": 4,
+    "HIST_DIV": 1,
+    "HIST_BND": 1
+  },
+  "historical_BND_reference_match": true
+}

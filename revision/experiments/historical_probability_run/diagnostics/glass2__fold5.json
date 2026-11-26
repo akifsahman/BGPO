@@ -1,0 +1,54 @@
+{
+  "dataset": "glass2",
+  "fold": 5,
+  "budget": 144,
+  "pool_size": 576,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 144,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.000636042095720768
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 144,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0008177920244634151
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 144,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.004345334134995937
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 144,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0005252910777926445
+    }
+  },
+  "same_candidate_indices": 51,
+  "historical_unique_indices": 144,
+  "reference_metric_match": true,
+  "seconds": 0.15030608302913606
+}

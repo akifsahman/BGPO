@@ -1,0 +1,28 @@
+{
+  "dataset": "musk",
+  "outer_fold": 3,
+  "decision_seconds": 46.80238112504594,
+  "selection_rule": "highest mean inner GMean; exact ties SMOTE, HIST_BND, HIST_DIV",
+  "choices": {
+    "SVM_RBF": "HIST_BND",
+    "KNN": "SMOTE",
+    "RandomForest": "SMOTE"
+  },
+  "inner_mean_GMean": {
+    "SVM_RBF": {
+      "SMOTE": 0.9718596143962551,
+      "HIST_BND": 0.9743140501353716,
+      "HIST_DIV": 0.9727573624561563
+    },
+    "KNN": {
+      "SMOTE": 0.9115833054715775,
+      "HIST_BND": 0.905483418738684,
+      "HIST_DIV": 0.9080433508810767
+    },
+    "RandomForest": {
+      "SMOTE": 0.9429392190835153,
+      "HIST_BND": 0.9408436032335116,
+      "HIST_DIV": 0.9416375158678686
+    }
+  }
+}

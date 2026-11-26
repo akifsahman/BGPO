@@ -1,0 +1,52 @@
+{
+  "status": "post-hoc exploratory comparison; historical method seen before this analysis",
+  "dataset_count": 44,
+  "fold_count": 220,
+  "classifier_rows": 660,
+  "mean_selected_index_overlap_with_deterministic_BND": 0.33771270490213207,
+  "strict_budget_and_unique_indices": true,
+  "Holm75_significant": [
+    {
+      "classifier": "SVM_RBF",
+      "metric": "BalancedAccuracy",
+      "comparator": "BND",
+      "mean_difference": 0.010108763546660264,
+      "p_holm_all75": 0.01981674916456676
+    },
+    {
+      "classifier": "SVM_RBF",
+      "metric": "GMean",
+      "comparator": "BND",
+      "mean_difference": 0.021887819314625558,
+      "p_holm_all75": 0.03451093888915964
+    },
+    {
+      "classifier": "KNN",
+      "metric": "BalancedAccuracy",
+      "comparator": "BND",
+      "mean_difference": 0.013014024759995118,
+      "p_holm_all75": 0.03153692431469648
+    },
+    {
+      "classifier": "KNN",
+      "metric": "GMean",
+      "comparator": "BND",
+      "mean_difference": 0.02431458630356843,
+      "p_holm_all75": 0.01753377549010912
+    },
+    {
+      "classifier": "RandomForest",
+      "metric": "BalancedAccuracy",
+      "comparator": "BND",
+      "mean_difference": 0.016570033151228656,
+      "p_holm_all75": 0.019157754608486396
+    },
+    {
+      "classifier": "RandomForest",
+      "metric": "GMean",
+      "comparator": "BND",
+      "mean_difference": 0.04402315673257106,
+      "p_holm_all75": 0.003275762695830561
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "status": "exploratory historical-primary manuscript preparation",
+  "dataset_count": 44,
+  "fold_count": 220,
+  "historical_selector_rows": 2640,
+  "all_historical_selectors_complete": true,
+  "significant_classical_differences": [
+    {
+      "classifier": "KNN",
+      "metric": "F1",
+      "comparator": "ADASYN",
+      "n_datasets": 41,
+      "mean_difference": 0.02349553883799039,
+      "p_holm_all135": 0.031054194975002943
+    },
+    {
+      "classifier": "KNN",
+      "metric": "BalancedAccuracy",
+      "comparator": "ROS",
+      "n_datasets": 44,
+      "mean_difference": 0.0131900592406486,
+      "p_holm_all135": 0.039385200680898
+    },
+    {
+      "classifier": "KNN",
+      "metric": "BalancedAccuracy",
+      "comparator": "Borderline_SMOTE2",
+      "n_datasets": 37,
+      "mean_difference": 0.023707484395053883,
+      "p_holm_all135": 0.004387246066471562
+    },
+    {
+      "classifier": "KNN",
+      "metric": "GMean",
+      "comparator": "ROS",
+      "n_datasets": 44,
+      "mean_difference": 0.020640636033061734,
+      "p_holm_all135": 0.02580508619244829
+    },
+    {
+      "classifier": "KNN",
+      "metric": "GMean",
+      "comparator": "Borderline_SMOTE2",
+      "n_datasets": 37,
+      "mean_difference": 0.04005506908208882,
+      "p_holm_all135": 0.0055860355496406555
+    },
+    {
+      "classifier": "KNN",
+      "metric": "ROC_AUC",
+      "comparator": "ROS",
+      "n_datasets": 44,
+      "mean_difference": 0.013592278090152888,
+      "p_holm_all135": 0.029617864003562706
+    },
+    {
+      "classifier": "RandomForest",
+      "metric": "GMean",
+      "comparator": "ROS",
+      "n_datasets": 44,
+      "mean_difference": 0.035757757386325834,
+      "p_holm_all135": 0.03482095827964356
+    }
+  ]
+}

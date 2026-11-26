@@ -1,0 +1,154 @@
+{
+  "dataset": "page-blocks-1-3_vs_4",
+  "fold": 5,
+  "budget": 332,
+  "pool_size": 1328,
+  "nominal_columns": {},
+  "pool_generators": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 332,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0008358329068869352
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 332,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0010556671768426895
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 332,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.007307957857847214
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 332,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0006422079168260098
+    }
+  },
+  "methods": {
+    "Original": {
+      "status": "ok",
+      "seconds": 0.0
+    },
+    "ROS": {
+      "status": "ok",
+      "added": 332,
+      "seconds": 0.00028129201382398605
+    },
+    "SMOTE": {
+      "status": "ok",
+      "added": 332,
+      "seconds": 0.0007355408743023872,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      }
+    },
+    "ADASYN": {
+      "status": "ok",
+      "added": 332,
+      "seconds": 0.001049624988809228,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      }
+    },
+    "Borderline_SMOTE1": {
+      "status": "ok",
+      "added": 332,
+      "seconds": 0.0011866248678416014,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5,
+        "k_neighbors": 5
+      }
+    },
+    "Borderline_SMOTE2": {
+      "status": "ok",
+      "added": 332,
+      "seconds": 0.001209791051223874,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5,
+        "k_neighbors": 5
+      }
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "added": 332,
+      "seconds": 0.008793957997113466,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      }
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "added": 332,
+      "seconds": 0.0012760830577462912,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      }
+    },
+    "kmeans_SMOTE": {
+      "status": "ok",
+      "added": 332,
+      "seconds": 0.0024743329267948866,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5,
+        "n_clusters": 10
+      }
+    },
+    "RND": {
+      "status": "ok",
+      "seconds": 0.00012608314864337444
+    },
+    "DIV": {
+      "status": "ok",
+      "seconds": 0.2608782921452075
+    },
+    "DEN": {
+      "status": "ok",
+      "seconds": 0.005526625085622072
+    },
+    "BND": {
+      "status": "ok",
+      "seconds": 0.0029712500981986523
+    }
+  },
+  "total_seconds": 1.1948005410376936
+}

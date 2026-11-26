@@ -1,0 +1,54 @@
+{
+  "dataset": "wisconsin",
+  "fold": 1,
+  "budget": 164,
+  "pool_size": 656,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 164,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0009457499254494905
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 164,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0018732920289039612
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 164,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.021189667051658034
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 164,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0009581670165061951
+    }
+  },
+  "same_candidate_indices": 86,
+  "historical_unique_indices": 164,
+  "reference_metric_match": true,
+  "seconds": 0.1854422918986529
+}

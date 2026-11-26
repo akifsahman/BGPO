@@ -1,0 +1,7 @@
+{
+  "status": "sequential descriptive timing; not hardware-controlled",
+  "folds": 220,
+  "median_pool_seconds": 0.016740104532800615,
+  "median_selection_seconds": 0.013836833531968296,
+  "median_total_seconds": 0.030780896195210516
+}

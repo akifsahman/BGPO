@@ -1,0 +1,54 @@
+{
+  "dataset": "shuttle-c0-vs-c4",
+  "fold": 3,
+  "budget": 1267,
+  "pool_size": 3801,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 1267,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0017927500884979963
+    },
+    "ADASYN": {
+      "status": "empty",
+      "candidates": 0,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0011507910676300526
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 1267,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.01950491708703339
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 1267,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.002040041144937277
+    }
+  },
+  "same_candidate_indices": 427,
+  "historical_unique_indices": 1267,
+  "reference_metric_match": true,
+  "seconds": 0.2755254169460386
+}

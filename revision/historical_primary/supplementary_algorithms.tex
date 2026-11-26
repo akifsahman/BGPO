@@ -1,0 +1,69 @@
+\section*{Supplementary algorithms}
+\noindent The four procedures below describe the selectors used for the revised experiments. The candidate pool is an indexed sequence $P=(z_1,\ldots,z_M)$: equal coordinates at different positions remain separate candidates. Mathematical indices below are one-based; the released Python code uses zero-based indices. Each selector returns positions in draw order, which are appended to the original training fold with minority labels. All neighborhood fits use original training observations only. In the reported experiments a fold is unavailable when $M<N_{\mathrm{new}}$.
+
+\subsection*{Supplementary Algorithm 1. Random selection (RND)}
+\noindent\textbf{Input:} indexed pool $P$, budget $N_{\mathrm{new}}$, seed $42$.\par
+\noindent\textbf{Output:} ordered selected pool positions $I_{\mathrm{RND}}$.\par\smallskip
+\noindent\begin{tabular}{@{}r@{\hspace{1em}}p{0.88\linewidth}@{}}
+1 & If $N_{\mathrm{new}}\leq 0$, return the empty list.\\[2pt]
+2 & If $M<N_{\mathrm{new}}$, report an unavailable fold.\\[2pt]
+3 & Create $R=\operatorname{RandomState}(42)$.\\[2pt]
+4 & Draw $I_{\mathrm{RND}}=R.\operatorname{choice}(\{1,\ldots,M\},\ \mathrm{size}=N_{\mathrm{new}},\ \mathrm{replace}=\mathrm{False})$ [main-text Eq.~4].\\[2pt]
+5 & Return $I_{\mathrm{RND}}$ and the candidates $P[I_{\mathrm{RND}}]$ in draw order.\\
+\end{tabular}
+
+\clearpage
+\subsection*{Supplementary Algorithm 2. Diversity-guided selection (DIV)}
+\noindent\textbf{Input:} indexed pool $P$, budget $N_{\mathrm{new}}$, seed $42$.\par
+\noindent\textbf{Output:} ordered selected pool positions $I_{\mathrm{DIV}}$.\par\smallskip
+\noindent\begin{tabular}{@{}r@{\hspace{1em}}p{0.88\linewidth}@{}}
+1 & If $N_{\mathrm{new}}\leq0$, return the empty list; if $M<N_{\mathrm{new}}$, report an unavailable fold.\\[2pt]
+2 & Set $K=\min\{\max(2,\lfloor N_{\mathrm{new}}/5\rfloor),\ \max(1,\lfloor M/2\rfloor),\ 20\}$ [Eq.~15].\\[2pt]
+3 & Create $R=\operatorname{RandomState}(42)$.\\[2pt]
+4 & If $K=1$ or $M\leq K$, draw $N_{\mathrm{new}}$ positions uniformly without replacement and return them.\\[2pt]
+5 & Fit $\operatorname{KMeans}(n_{\mathrm{clusters}}=K,\ \mathrm{random\_state}=42,\ n_{\mathrm{init}}=10)$ to $P$ [Eq.~5].\\[2pt]
+6 & For every cluster label $c$, let $C_c$ be its list of pool positions.\\[2pt]
+7 & Sort clusters by $(|C_c|,c)$ in descending order: larger clusters first, then larger label on ties.\\[2pt]
+8 & Set $b=\lfloor N_{\mathrm{new}}/K\rfloor$ and $h=N_{\mathrm{new}}\bmod K$; start $I_{\mathrm{DIV}}$ as an empty list.\\[2pt]
+9 & For each cluster $C_c$ at zero-based rank $r=0,\ldots,K-1$ in that order:\\[2pt]
+10 & \quad Set $q_c=\min\{|C_c|,\ b+\mathbf{1}(r<h)\}$ [Eq.~6].\\[2pt]
+11 & \quad If $q_c>0$, draw $q_c$ positions from $C_c$ using $R.\operatorname{choice}(C_c,\mathrm{size}=q_c,\mathrm{replace}=\mathrm{False})$.\\[2pt]
+12 & \quad Append the drawn positions, in draw order, to $I_{\mathrm{DIV}}$.\\[2pt]
+13 & While $|I_{\mathrm{DIV}}|<N_{\mathrm{new}}$, append $1+R.\operatorname{randint}(0,M)$ (whole-pool replacement fill).\\[2pt]
+14 & Return $I_{\mathrm{DIV}}$ and $P[I_{\mathrm{DIV}}]$. The exceptional fill can repeat positions.\\
+\end{tabular}
+
+\clearpage
+\subsection*{Supplementary Algorithm 3. Density-guided selection (DEN)}
+\noindent\textbf{Input:} indexed pool $P$, original training features $X$, labels $y\in\{0,1\}$, budget $N_{\mathrm{new}}$, seed $42$.\par
+\noindent\textbf{Output:} ordered selected pool positions $I_{\mathrm{DEN}}$.\par\smallskip
+\noindent\begin{tabular}{@{}r@{\hspace{1em}}p{0.88\linewidth}@{}}
+1 & If $N_{\mathrm{new}}\leq0$, return the empty list; if $M<N_{\mathrm{new}}$, report an unavailable fold.\\[2pt]
+2 & Let $X_{\min}=\{x_j:y_j=1\}$; set $k_{\min}=\min(5,|X_{\min}|-1)$ and $k_{\mathrm{all}}=\min(5,|X|-1)$.\\[2pt]
+3 & Fit nearest-neighbor queries to $X_{\min}$ with $k_{\min}$ and to the complete original $X$ with $k_{\mathrm{all}}$; require both counts to be positive.\\[2pt]
+4 & For each candidate position $i=1,\ldots,M$:\\[2pt]
+5 & \quad Set $\bar d_{\min}(z_i)$ to the mean distance to its $k_{\min}$ nearest observations in $X_{\min}$.\\[2pt]
+6 & \quad Set $a_{\mathrm{maj}}(z_i)$ to the fraction of majority labels among its $k_{\mathrm{all}}$ nearest observations in $X$.\\[2pt]
+7 & \quad Set $s_i=1/\{[\bar d_{\min}(z_i)+\varepsilon][a_{\mathrm{maj}}(z_i)+\varepsilon]\}$, $\varepsilon=10^{-9}$ [Eq.~7].\\[2pt]
+8 & Set $w_i=s_i-\min_j s_j+\varepsilon$ and $\pi_i=w_i/\sum_j w_j$.\\[2pt]
+9 & Create $R=\operatorname{RandomState}(42)$ and draw $I_{\mathrm{DEN}}=R.\operatorname{choice}(\{1,\ldots,M\},N_{\mathrm{new}},\mathrm{replace}=\mathrm{False},p=\pi)$ [Eq.~8].\\[2pt]
+10 & Return $I_{\mathrm{DEN}}$ and $P[I_{\mathrm{DEN}}]$ in draw order.\\
+\end{tabular}
+
+\clearpage
+\subsection*{Supplementary Algorithm 4. Boundary-guided selection (BND)}
+\noindent\textbf{Input:} indexed pool $P$, original training features $X$, labels $y\in\{0,1\}$, budget $N_{\mathrm{new}}$, seed $42$.\par
+\noindent\textbf{Output:} ordered selected pool positions $I_{\mathrm{BND}}$.\par\smallskip
+\noindent\begin{tabular}{@{}r@{\hspace{1em}}p{0.88\linewidth}@{}}
+1 & If $N_{\mathrm{new}}\leq0$, return the empty list; if $M<N_{\mathrm{new}}$, report an unavailable fold.\\[2pt]
+2 & Set $k_{\mathrm{BND}}=\min(10,|X|-1)$ and fit a $k_{\mathrm{BND}}$ nearest-neighbor query to the complete original training $X$.\\[2pt]
+3 & For each candidate position $i=1,\ldots,M$:\\[2pt]
+4 & \quad Query the $k_{\mathrm{BND}}$ nearest original training observations of $z_i$.\\[2pt]
+5 & \quad Set $p_{\min,i}$ and $p_{\mathrm{maj},i}$ to their minority and majority fractions [Eqs.~9--10].\\[2pt]
+6 & \quad Set $q_i=\max\{1-|p_{\min,i}-p_{\mathrm{maj},i}|,\varepsilon\}$, $\varepsilon=10^{-9}$ [Eq.~11].\\[2pt]
+7 & Set $w_i=q_i-\min_j q_j+\varepsilon$ and $\pi_i=w_i/\sum_j w_j$ [Eq.~12].\\[2pt]
+8 & Create $R=\operatorname{RandomState}(42)$ and draw $I_{\mathrm{BND}}=R.\operatorname{choice}(\{1,\ldots,M\},N_{\mathrm{new}},\mathrm{replace}=\mathrm{False},p=\pi)$ [Eq.~13].\\[2pt]
+9 & Return $I_{\mathrm{BND}}$ and $P[I_{\mathrm{BND}}]$ in draw order.\\
+\end{tabular}
+
+\clearpage

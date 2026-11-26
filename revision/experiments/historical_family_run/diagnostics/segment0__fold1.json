@@ -1,0 +1,13 @@
+{
+  "dataset": "segment0",
+  "fold": 1,
+  "budget": 1320,
+  "pool_size": 5280,
+  "duplicate_excess": {
+    "HIST_RND": 15,
+    "HIST_DEN": 32,
+    "HIST_DIV": 17,
+    "HIST_BND": 10
+  },
+  "historical_BND_reference_match": true
+}

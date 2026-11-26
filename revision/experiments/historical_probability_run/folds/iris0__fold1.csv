@@ -1,0 +1,4 @@
+dataset,fold,method,classifier,status,budget,pool_size,F1,BalancedAccuracy,GMean,ROC_AUC,MCC,fit_seconds
+iris0,1,HIST_PROB_BND,SVM_RBF,ok,40,160,1.0,1.0,1.0,1.0,1.0,0.00032479199580848217
+iris0,1,HIST_PROB_BND,KNN,ok,40,160,1.0,1.0,1.0,1.0,1.0,0.00016037491150200367
+iris0,1,HIST_PROB_BND,RandomForest,ok,40,160,1.0,1.0,1.0,1.0,1.0,0.037753290962427855

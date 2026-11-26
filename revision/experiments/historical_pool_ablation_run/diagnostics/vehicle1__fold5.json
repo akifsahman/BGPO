@@ -1,0 +1,98 @@
+{
+  "dataset": "vehicle1",
+  "fold": 5,
+  "budget": 329,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 329,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.001150666968896985
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 329,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0018011669162660837
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 329,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.2644835829269141
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 329,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0008978750556707382
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 329,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 329,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 329,
+      "duplicate_excess": 0
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 329,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 987,
+      "duplicate_excess": 2
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 987,
+      "duplicate_excess": 4
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 987,
+      "duplicate_excess": 10
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 987,
+      "duplicate_excess": 1
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 1316,
+      "duplicate_excess": 9
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

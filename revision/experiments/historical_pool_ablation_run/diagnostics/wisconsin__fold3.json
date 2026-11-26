@@ -1,0 +1,98 @@
+{
+  "dataset": "wisconsin",
+  "fold": 3,
+  "budget": 164,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 164,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0009731249883770943
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 164,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0019142499659210443
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 164,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.01773358415812254
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 164,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0008894170168787241
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 164,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 164,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 164,
+      "duplicate_excess": 0
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 164,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 492,
+      "duplicate_excess": 1
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 492,
+      "duplicate_excess": 5
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 492,
+      "duplicate_excess": 5
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 492,
+      "duplicate_excess": 0
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 656,
+      "duplicate_excess": 1
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

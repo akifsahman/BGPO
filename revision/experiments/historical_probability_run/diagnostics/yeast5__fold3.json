@@ -1,0 +1,54 @@
+{
+  "dataset": "yeast5",
+  "fold": 3,
+  "budget": 1117,
+  "pool_size": 4468,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 1117,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0015052089001983404
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 1117,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.001987166004255414
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 1117,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.020789084024727345
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 1117,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0007154159247875214
+    }
+  },
+  "same_candidate_indices": 335,
+  "historical_unique_indices": 1117,
+  "reference_metric_match": true,
+  "seconds": 0.35193087509833276
+}

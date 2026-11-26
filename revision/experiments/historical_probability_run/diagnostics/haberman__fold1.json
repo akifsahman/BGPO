@@ -1,0 +1,54 @@
+{
+  "dataset": "haberman",
+  "fold": 1,
+  "budget": 116,
+  "pool_size": 464,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 116,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0006598748732358217
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 116,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0009667500853538513
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 116,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.043146666837856174
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 116,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0005799999926239252
+    }
+  },
+  "same_candidate_indices": 35,
+  "historical_unique_indices": 116,
+  "reference_metric_match": true,
+  "seconds": 0.17986766598187387
+}

@@ -1,0 +1,26 @@
+{
+  "BND": {
+    "better_blocks": 9,
+    "tie_blocks": 0,
+    "worse_blocks": 0,
+    "mean_difference_over_nine_blocks": 0.021185264372983577
+  },
+  "BND_QUOTA": {
+    "better_blocks": 9,
+    "tie_blocks": 0,
+    "worse_blocks": 0,
+    "mean_difference_over_nine_blocks": 0.012203665433290704
+  },
+  "DIV": {
+    "better_blocks": 3,
+    "tie_blocks": 0,
+    "worse_blocks": 6,
+    "mean_difference_over_nine_blocks": -0.004417156852608153
+  },
+  "SMOTE": {
+    "better_blocks": 5,
+    "tie_blocks": 0,
+    "worse_blocks": 4,
+    "mean_difference_over_nine_blocks": 0.002474140139983816
+  }
+}

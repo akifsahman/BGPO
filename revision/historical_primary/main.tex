@@ -1,0 +1,460 @@
+% !TeX program = pdflatex
+% Scientific Reports manuscript. Official supplied Springer Nature class.
+% Bibliography metadata comes only from the supplied EndNote library.
+\documentclass[pdflatex]{sn-jnl}
+% Nature numerical reference style; the local BST fixes two conference entries.
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{bgpo-nature}
+\setlength{\bibsep}{1em}
+\def\NumBib{YES}
+\renewcommand{\bibfont}{\normalfont\normalsize}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{array,booktabs,longtable,multirow}
+\usepackage{pdflscape}
+\usepackage{ragged2e}
+\usepackage{url}
+\setlength{\emergencystretch}{2em}
+\setlength{\LTpre}{8pt}
+\setlength{\LTpost}{8pt}
+\raggedbottom
+\AtBeginDocument{\RaggedRight}
+% The supplied class has blank running heads whose boxes conflict with
+% landscape pages. Keep those heads empty without changing class typography.
+\makeatletter
+\AtBeginDocument{\let\@oddhead\@empty\let\@evenhead\@empty}
+\makeatother
+\title[Boundary-guided sample selection]{Boundary-Guided Sample Selection from a Composite Synthetic Pool for Imbalanced Classification}
+\author*[1]{\fnm{Mehmet Akif} \sur{\c{S}ahman}}\email{asahman@selcuk.edu.tr}
+\affil[1]{\orgdiv{Department of Electrical and Electronics Engineering}, \orgname{Faculty of Technology, Sel\c{c}uk University}, \orgaddress{\city{Konya}, \country{Turkey}}}
+\abstract{Selecting which synthetic minority candidates enter training can matter as much as generating them. We audited the historical boundary-guided pool-based oversampling (BGPO) notebook and reproduced its stochastic boundary-composition rule on the predefined five-fold partitions of 44 KEEL datasets, using three classifier families and five metrics. The framework combines Synthetic Minority Over-sampling Technique (SMOTE), ADASYN, MWMOTE, and G-SMOTE in an indexed pool and selects an equal final budget with one of four rules. On the same pool, boundary selection improved G-Mean over density selection by 0.015 for k-nearest neighbors (KNN) and 0.018 for Random Forest; both paired comparisons survived Holm adjustment over 60 selector contrasts. The boundary rule did not significantly outperform standalone SMOTE on the KEEL benchmark: its mean G-Mean differences were -0.009, approximately zero, and -0.010 for support vector machines (SVM), KNN, and Random Forest. In seven external sources, boundary selection exceeded SMOTE in 10 of 21 source--classifier G-Mean blocks; a training-only adaptive choice among SMOTE, boundary, and diversity selection improved only 4 of 12 blocks on four previously unscored sources. Thus the evidence identifies measurable selection effects and favorable cases, without establishing general SMOTE superiority.}
+
+\keywords{Imbalanced Classification, Boundary-Guided Selection, Synthetic Oversampling, Multi-Generator Pool, Class Overlap}
+\begin{document}
+\maketitle
+\makeatletter
+\let\@oddhead\@empty\let\@evenhead\@empty
+\makeatother
+
+
+\section{Introduction}\label{sec:1}
+
+% Source paragraph 10
+Imbalanced data classification is one of the significant and long-standing challenges in machine learning. When one class in a dataset contains far fewer examples than the other, standard algorithms develop a bias toward the majority class and fail to adequately represent the minority class \cite{ref01} \cite{ref02}. In many real-world applications, the class of primary interest is precisely this underrepresented class. Examples of such real-world problems include rare diseases in medical diagnosis, abnormal transactions in financial fraud, and attack patterns in cybersecurity \cite{ref03} \cite{ref04}. Therefore, the problem is viewed not as a numerical asymmetry in class distribution but as a learning issue that directly affects model reliability \cite{ref03} \cite{ref05}.
+
+% Source paragraph 11
+Approaches in the literature are categorized into three main areas: the data level, the algorithm level, and hybrid strategies \cite{ref01} \cite{ref02}. At the data level, the most common approach involves oversampling methods that generate synthetic examples for the minority class \cite{ref06}. A pioneering approach in this field, SMOTE, performs linear interpolation among minority samples \cite{ref07}. The method is simple and broadly applicable, but recent empirical work also finds that no rebalancing can be competitive on many tasks, underscoring the need for strong untreated baselines \cite{ref08}. However, SMOTE does not directly account for the data distribution and class overlap; when the decision boundary is complex, it may increase rather than reduce overlap \cite{ref02} \cite{ref16}.
+
+% Source paragraph 12
+The number of added minority samples alone does not determine their usefulness. Samples near class boundaries can inform the classifier, but ambiguous or mislabeled samples in overlapping regions can also increase errors \cite{ref10,ref13,ref16}. An oversampling method must therefore consider both coverage of the minority distribution and the location of the candidates it ultimately adds to training. A single generation mechanism may emphasize interpolation, local difficulty, or geometric spread, while datasets differ in overlap, density, and cluster structure \cite{ref15,ref17}. This motivates separating candidate generation from the subsequent choice of candidates.
+
+% Source paragraph 13
+This study examines a composite candidate pool formed by SMOTE \cite{ref07}, Adaptive Synthetic Sampling (ADASYN) \cite{ref18}, Majority Weighted Minority Oversampling Technique (MWMOTE) \cite{ref19}, and Geometric SMOTE (G-SMOTE) \cite{ref20}. These four generators provide distinct candidate-generation rules: interpolation between minority neighbors, adaptive allocation around difficult minority instances, weighted generation around informative minority instances, and sampling within a geometric region, respectively. The set is a deliberately small and interpretable collection of generation mechanisms; it is not claimed to be universally optimal. We then compare four rules for selecting a fixed number of candidates from the same pool. Boundary-guided selection is the primary rule investigated. Keeping the candidate pool and selection budget fixed isolates the effect of the selection rule; a separate pool-composition experiment is required to assess the choice of generators.
+
+% Source paragraphs 14--19
+The methodological contributions are:
+\begin{itemize}
+\item An auditable two-stage framework that retains an indexed four-generator pool and explicitly allocates a fixed augmentation budget.
+\item A stochastic, local class-composition boundary score from the original training observations, reproduced from the historical experiment code.
+\item A controlled comparison of four selection rules using the same candidates and final budget, followed by classical baselines, pool-composition checks, and external transfer tests. The central empirical claim concerns selection effects, not universal superiority over SMOTE.
+\end{itemize}
+
+% Source paragraph 20
+The remainder of the paper is organized as follows: Section 2 reviews the literature across four sub-themes; Section 3 presents the BGPO framework; Section 4 describes the experimental setup; Section 5 presents selection and classical-method comparisons; and Section 6 concludes with a discussion and future work.
+
+\section{Related Work}\label{sec:2}
+
+% Source paragraph 22
+The literature on learning from imbalanced datasets has shown that three distinct fundamental approaches have emerged: basic methods based on random sampling, adaptive approaches that take into account the geometric structure of classes, and decision-bound-sensitive, knowledge-based selection mechanisms \cite{ref01} \cite{ref02} \cite{ref05}. This evolution has revealed an important point: the problem is not merely about how many synthetic samples to generate, but also about which samples to select and how. The following four subsections address the literature in a way that highlights this gap.
+
+\subsection{Classic Oversampling Methods}
+
+% Source paragraph 24
+The most common strategy at the data level is to generate synthetic samples. The cornerstone of this field is SMOTE, which performs linear interpolation between minority class samples and their nearest neighbors \cite{ref07}. The method is simple and works well in most cases. However, SMOTE does not directly account for class distribution or overlap in boundary regions; it can generate noisy samples on complex decision surfaces and may increase rather than reduce inter-class overlap \cite{ref02} \cite{ref24}. ADASYN offers a different solution to this problem: rather than distributing synthetic samples evenly across all minority instances, it concentrates them in hard-to-learn regions---specifically, around minority instances surrounded by majority neighbors \cite{ref18}. It works well for data structures where shifting the decision boundary toward the minority side is desired; a side effect is that it amplifies the impact of noisy or mislabeled examples. Borderline-SMOTE addresses a similar concern but focuses on a different aspect: it targets ``borderline'' minority samples directly near the decision boundary and enriches regions critical for class separation rather than internal safe regions \cite{ref13}. MWMOTE, on the other hand, explicitly assumes that minority examples do not carry equal information; it identifies information-carrying examples and weights them based on their proximity to the majority class \cite{ref19}. G-SMOTE and K-Means SMOTE shift this focus toward the geometric aspect. G-SMOTE generates synthetic samples within a geometric region (a hypersphere or hyperellipsoid) rather than along a line segment between two points, thereby increasing the spatial diversity of the minority class \cite{ref20}. K-Means SMOTE first partitions the data space into clusters, then concentrates the synthesis within meaningful and robust clusters; it addresses both inter-class and intra-class imbalances simultaneously \cite{ref25}. More recent variants have refined this line further: a three-way decision oversampling that adaptively weights synthesis by cluster imbalance ratio \cite{ref26}, a local-density-peaks-based approach that injects density-aware structure into the synthesis \cite{ref27}, and a K-means-SMOTE-ENN bag-boost ensemble that combines synthesis with post-hoc cleaning under noisy regimes \cite{ref28}.
+
+% Source paragraph 25
+The most important empirical finding revealed by this literature is simple: no single method consistently outperforms others across all datasets. \cite{ref15} compared 85 SMOTE variants across 104 imbalanced datasets and demonstrated that the best method varies depending on the characteristics of the dataset. Independent benchmarking studies \cite{ref17} and a critical review of the joint effect of class imbalance and overlap \cite{ref16} confirm the same picture, while a recent theoretical-and-empirical study around SMOTE further reinforces this conclusion \cite{ref08}. The natural conclusion is that different behaviors---such as linear interpolation, adaptive densification, boundary-focused generation, information-weighted generation, and geometric generation---must be evaluated within a unified framework \cite{ref02} \cite{ref06}.
+
+\subsection{Boundary-Focused and Informative Sample Production Strategies}
+
+% Source paragraph 27
+Samples near the decision boundary represent the most critical region for generalization performance. The reason is clear: these are the areas where classes are most likely to be confused, where the risk of misclassification is highest, and where small changes in representation directly affect the decision function \cite{ref13} \cite{ref14}. The situation is even more critical in imbalanced data; the scarcity of the minority class in the boundary region causes the learning algorithm to shift the decision boundary toward the majority side \cite{ref11}. More recent methods quantify boundary informativeness in different ways. \cite{ref29} introduce a boundary-degree-based oversampling scheme that uses information entropy to estimate the probability that each negative sample acts as a boundary instance, indirectly driving the synthesis through this estimate. \cite{ref30} propose an oversampling approach based on Mahalanobis distance and local information specifically targeted at highly imbalanced and class-overlapped regimes. Subspace-based minority oversampling \cite{ref27} and grouping-based oversampling in kernel space \cite{ref31} further extend the boundary-aware idea by performing synthesis in transformed representations rather than in the original input space. ADASYN and Borderline-SMOTE are early examples that address boundary sensitivity at different levels \cite{ref13} \cite{ref18}, but in both cases, boundary sensitivity essentially remains limited to adjusting the generation density. Those approaches place the boundary decision during generation; our comparison instead holds the candidate supply fixed and varies the selection rule. A more systematic step toward addressing this shortcoming is the Boundary-Information-Based Oversampling (BIBO) framework proposed by \cite{ref10}. BIBO evaluates the advantages and disadvantages of both ``safe-information-based'' and ``danger-information-based'' samples and ensures balanced sampling along the decision boundary.
+
+% Source paragraph 28
+Support Vector Data Description (SVDD) based methods offer a different perspective. \cite{ref12} used SVDD to establish a class boundary by assigning a higher penalty coefficient to the minority class and weighted samples near this boundary using Density Peaks Clustering (DPC); they addressed both inter-class and intra-class imbalance simultaneously. \cite{ref11} proposed a counterfactual-based minority oversampling approach; by using structural information from the majority class to generate synthetic examples only at ``minimum inversion'' points where the class label would change, they obtained the most informative examples closest to the decision boundary. \cite{ref32}, however, took a different approach: they used an outlier detection-based preprocessing step to identify high-representative-power examples within the minority class and directed the generation process exclusively through these examples. \cite{ref33} and \cite{ref34} proposed diversity-based approaches aimed at ensuring that examples added to the training set represent different regions of the data space in cases where the samples across classes are severely imbalanced. Here, the diversity logic emphasizes spatial coverage, while the boundary-guided approach focuses on strengthening the regions where the decision function is most sensitive. The relative value of spatial coverage and boundary concentration under class overlap remains an empirical question. A composite pool allows these selection rules to be compared under the same candidate supply.
+
+\subsection{Pool-Based and Selection-Based Oversampling Approaches}
+
+% Source paragraph 30
+The fact that a single oversampling algorithm cannot be successful on every dataset \cite{ref15} has led researchers to turn to ensemble learning and hybrid architectures. The local density variations, multi-cluster structures, and heterogeneous geometric properties of complex datasets \cite{ref01} necessitated the evaluation of multiple generation strategies within the same framework. The most common strategy has been to add a cleaning or filtering step after synthetic generation. Hybrid frameworks such as SMOTE-ENN, SMOTE-Tomek, and SMOTE-IPF first generate synthetic samples and then filter out noisy or overlapping samples \cite{ref35} \cite{ref36}. These approaches improve post-generation quality; however, they typically adhere to a single generation logic and do not integrate multiple synthetic generators into a common candidate pool.
+
+% Source paragraph 31
+In more recent studies, there has been a marked increase in interest in selection mechanisms focused on diversity and representativeness. Khorshidi and Aickelin \cite{ref33} proposed a classifier architecture based on diversity optimization. Yang and colleagues \cite{ref34} used clustering to increase synthetic-sample diversity under extreme imbalance. Cluster-based oversampling methods \cite{ref25} \cite{ref26} \cite{ref27} restrict synthesis to safe, locally meaningful clusters and thereby implicitly perform a structured selection. GAN-based ensembles \cite{ref37} and prior-knowledge-guided GAN ensembles \cite{ref38} add a generative-model selection layer to the imbalanced learning pipeline. Cluster-assisted differential-evolution-based hybrids \cite{ref39} operate in a similar spirit, combining multiple resampling components but without an explicit selection mechanism on top of a multi-generator candidate space; the boundary-aware extension of differential-evolution-based oversampling \cite{ref40} likewise illustrates that injecting boundary information into a generation pipeline can yield consistent gains over its non-boundary counterpart. In these examples, generation and selection are usually designed together, making the independent effect of candidate selection difficult to isolate.
+
+% Recent work requested by the reviewers
+Recent approaches also broaden the design space beyond geometric interpolation. KCPIA synthesizes minority instances in a binary encoding space using an information-content similarity measure and constrains candidates to limit incursions into majority regions \cite{ref50}. A graph-based mutually supervised heterogeneous ensemble uses different data augmentation methods to balance subsets of training data before constructing a graph of base classifiers \cite{ref51}. The first primarily changes how candidates are generated; the second changes how augmented data and classifiers are combined. Our question is narrower: given a fixed multi-generator candidate pool, which candidates should be admitted to the training set?
+
+% Source paragraph 32
+Four selection strategies that can be applied to the same feature pool can be conceptually distinguished. Random selection makes selections without adhering to any structural principles and serves as the baseline. Diversity-guided selection aims to preserve samples that represent different regions of the data space, thereby increasing spatial coverage. Density-guided selection prefers samples from denser and locally meaningful regions, strengthening the dominant subspaces of the minority structure. Boundary-guided selection, on the other hand, highlights regions near the decision boundary that influence class separation, providing the learning algorithm with more discriminative samples. While the current literature provides indirect or partial support for each of these approaches, studies that directly and systematically compare all four on the same composite pool structure are quite limited \cite{ref05}. The consolidation of candidate examples from multiple generators into a single pool and their examination under different selection strategies is not yet a widespread research trend; pool-based selection awaits exploration as an independent research axis.
+
+\subsection{Research Gap and Positioning of the Proposed Framework}
+
+% Source paragraph 34
+Considering the literature summarized above as a whole, two main research gaps emerge. First, most studies focus on a single synthetic generation method and do not systematically combine different generation behaviors within the same framework. However, different oversampling methods generate distinct types of synthetic candidates in the data space, and these behaviors may potentially complement one another \cite{ref15} \cite{ref41} \cite{ref42}. Although there is empirical evidence that a single generation logic may not be optimal across all data regimes \cite{ref06} \cite{ref15}, frameworks that evaluate multiple generators within a shared candidate space remain scarce in the literature. The second gap is more intriguing, as this is the primary focus of this study. The selection mechanism is often implicitly embedded within the production process or treated as a simple post-processing filtering step \cite{ref35} \cite{ref36}. Studies that systematically compare different selection strategies applied to the same composite pool and examine selection itself as a central design axis are extremely limited. While the question ``Which oversampling method is better?'' is intensely debated, the question ``Which candidate samples from different methods should be selected, and according to which structural principle?'' has not been sufficiently explored.
+
+% Source paragraph 35
+This study addresses precisely this gap and contributes along two axes. The first is method diversity: rather than relying on the assumptions of a single algorithm, it integrates methods with distinct characteristics---such as SMOTE, ADASYN, MWMOTE, and G-SMOTE---under a Composite Synthetic Pool framework, thereby creating a richer candidate space. The second is selection-focused design. Selection is no longer treated as a random or secondary process following generation but is instead addressed as a central design axis. The effect of boundary-guided selection on held-out classification performance is the empirical question examined in this framework \cite{ref10} \cite{ref11} \cite{ref12}. In this context, the oversampling problem includes a qualitative candidate-selection decision in addition to the number of samples added.
+
+\section{Proposed Framework}\label{sec:3}
+
+BGPO separates the production of synthetic minority candidates from the decision about which candidates enter the training set. The evaluated boundary rule is seeded and stochastic: it uses local class composition around a candidate and then samples candidate indices according to the resulting weights.
+
+\subsection{Composite Candidate Pool}
+
+Let \(D_{\mathrm{train}}=\{(x_i,y_i)\}_{i=1}^{n}\), where \(y_i=1\) denotes the minority class and \(y_i=0\) the majority class. Their training counts are \(n_{\min}\) and \(n_{\mathrm{maj}}\). At augmentation rate \(r\), the required final number of synthetic minority observations is
+\begin{equation}\label{eq:1}
+N_{\mathrm{new}}=\operatorname{round}\!\left((n_{\mathrm{maj}}-n_{\min})r\right).
+\end{equation}
+All reported experiments use \(r=1\). Each of four generators is requested to produce \(N_{\mathrm{new}}\) candidates:
+\begin{equation}\label{eq:2}
+\mathcal{G}=\{\mathrm{SMOTE},\mathrm{ADASYN},\mathrm{MWMOTE},\mathrm{G\mbox{-}SMOTE}\}.
+\end{equation}
+SMOTE interpolates between minority neighbors, ADASYN concentrates generation around difficult minority observations, MWMOTE weights informative minority observations, and G-SMOTE samples within a geometric region. The four-generator set supplies different candidate mechanisms; it is not assumed to be an optimal mixture. The ordered candidate pool is
+\begin{equation}\label{eq:3}
+P=S^{(\mathrm{SMOTE})}\Vert S^{(\mathrm{ADASYN})}\Vert
+S^{(\mathrm{MWMOTE})}\Vert S^{(\mathrm{G\mbox{-}SMOTE})}
+=(z_1,\ldots,z_M).
+\end{equation}
+The pool is indexed: equal coordinates generated twice occupy two positions. When all four generators meet their requests, \(M=4N_{\mathrm{new}}\). A short or failed generator output is recorded. Selection is attempted only if \(M\geq N_{\mathrm{new}}\); no short pool is silently filled from a different generator.
+
+\subsection{Four Fixed-Pool Selection Rules}
+
+All rules receive the same indexed \(P\) and target \(N_{\mathrm{new}}\). The original training observations alone define class neighborhoods; neither the test fold nor any selected synthetic candidate contributes to these neighborhoods.
+
+\textbf{Random selection (RND).} A seeded uniform draw of \(N_{\mathrm{new}}\) different pool indices provides a reference:
+\begin{equation}\label{eq:4}
+I_{\mathrm{RND}}\sim\operatorname{UniformSubsets}
+\bigl(\{1,\ldots,M\},N_{\mathrm{new}};\mathrm{seed}=42\bigr).
+\end{equation}
+
+\textbf{Diversity selection (DIV).} Seeded \(k\)-means partitions \(P\) into \(K\) clusters,
+\begin{equation}\label{eq:5}
+P=C_1\cup\cdots\cup C_K,\qquad C_c\cap C_{c'}=\varnothing
+\quad(c\ne c').
+\end{equation}
+The executed notebook gives every cluster a base quota \(\lfloor N_{\mathrm{new}}/K\rfloor\); the \(N_{\mathrm{new}}\bmod K\) extra places go to the largest clusters, with the notebook's descending cluster-size and label ordering. A cluster cannot contribute more distinct indices than its size:
+\begin{equation}\label{eq:6}
+q_c=\min\left\{|C_c|,\left\lfloor\frac{N_{\mathrm{new}}}{K}\right\rfloor+
+\mathbf{1}\{c\text{ receives an extra place}\}\right\}.
+\end{equation}
+Within each cluster, the rule draws \(q_c\) indices uniformly with the recorded seed. If small or empty clusters leave a shortfall, the notebook draws the remaining positions uniformly from the entire pool, with replacement. This exceptional fill can repeat an index. DIV is thus a cluster-allocation comparator, rather than a deterministic farthest-first rule.
+
+\textbf{Density selection (DEN).} With \(k_{\min}=\min(5,n_{\min}-1)\), calculate the mean distance \(\bar d_{\min}(z_i)\) to the nearest original minority observations. With \(k_{\mathrm{all}}=\min(5,n-1)\), let \(a_{\mathrm{maj}}(z_i)\) be the majority fraction among the nearest observations of the original full training fold. The notebook score is
+\begin{equation}\label{eq:7}
+s_{\mathrm{DEN}}(z_i)=
+\frac{1}{\bar d_{\min}(z_i)+\varepsilon}\,
+\frac{1}{a_{\mathrm{maj}}(z_i)+\varepsilon},
+\qquad \varepsilon=10^{-9}.
+\end{equation}
+Scores are shifted to positive weights \(w_i=s_{\mathrm{DEN}}(z_i)-\min_j s_{\mathrm{DEN}}(z_j)+\varepsilon\). The method samples \(N_{\mathrm{new}}\) indices without replacement with \texttt{RandomState(42)}; at each draw the remaining indices have probabilities proportional to their weights:
+\begin{equation}\label{eq:8}
+\Pr(i\mid A)=\frac{w_i}{\sum_{j\in A}w_j},
+\qquad i\in A,
+\end{equation}
+where \(A\) denotes the currently available indices. This is a stochastic minority-support rule, not pool-only inverse-distance ranking.
+
+\textbf{Boundary selection (BND).} For each \(z_i\), find its \(k_{\mathrm{BND}}=\min(10,n-1)\) nearest original training observations, pooled over the two classes. Let
+\begin{equation}\label{eq:9}
+p_{\min}(z_i)=\frac{1}{k_{\mathrm{BND}}}
+\sum_{j\in\mathcal{N}_{k_{\mathrm{BND}}}(z_i;D_{\mathrm{train}})}
+\mathbf{1}\{y_j=1\},
+\end{equation}
+\begin{equation}\label{eq:10}
+p_{\mathrm{maj}}(z_i)=\frac{1}{k_{\mathrm{BND}}}
+\sum_{j\in\mathcal{N}_{k_{\mathrm{BND}}}(z_i;D_{\mathrm{train}})}
+\mathbf{1}\{y_j=0\}.
+\end{equation}
+The boundary-composition score is highest when both classes occur in similar proportions in the local original-training neighborhood:
+\begin{equation}\label{eq:11}
+q(z_i)=\max\{1-|p_{\min}(z_i)-p_{\mathrm{maj}}(z_i)|,\varepsilon\}.
+\end{equation}
+The exact notebook then shifts the scores and makes a seeded probability-weighted draw:
+\begin{equation}\label{eq:12}
+w_i=q(z_i)-\min_j q(z_j)+\varepsilon,\qquad
+\pi_i=\frac{w_i}{\sum_{j=1}^{M}w_j},
+\end{equation}
+\begin{equation}\label{eq:13}
+I_{\mathrm{BND}}=
+\operatorname{WeightedSampleWithoutReplacement}
+\bigl(\{1,\ldots,M\},N_{\mathrm{new}};\pi,\mathrm{seed}=42\bigr).
+\end{equation}
+The score favors local class mixing; it does not prove that a candidate is correctly labeled, informative, or on a particular classifier's learned boundary. Majority-dominated overlap and exact duplicate coordinates can still cause harm. RND, DEN, and BND choose distinct pool indices, although selected coordinates can coincide.
+
+\subsection{Parameters, Algorithm, and Cost}
+
+For SMOTE, ADASYN, MWMOTE, and G-SMOTE generation, the safe minority-neighborhood size is
+\begin{equation}\label{eq:14}
+k_{\mathrm{safe}}=\min(5,n_{\min}-1).
+\end{equation}
+The historical diversity cluster count is
+\begin{equation}\label{eq:15}
+K=\min\left\{\max\!\left(2,\left\lfloor N_{\mathrm{new}}/5\right\rfloor\right),
+\max\!\left(1,\left\lfloor M/2\right\rfloor\right),20\right\}.
+\end{equation}
+The reported classifier experiments use the same \(k_{\mathrm{safe}}\) and seed 42 across generators; the selector-specific neighborhoods above are separate.
+
+\noindent\textbf{BGPO algorithm.} (1) Fit feature preprocessing on the training fold and determine \(N_{\mathrm{new}}\). (2) Request candidates from each generator and concatenate the indexed pool, recording actual counts. (3) If \(M<N_{\mathrm{new}}\), report an unavailable fold; otherwise, calculate \(p_{\min}\), \(p_{\mathrm{maj}}\), \(q\), and \(\pi\) from the original training fold. (4) Draw exactly \(N_{\mathrm{new}}\) candidate indices by equation~\eqref{eq:13}, append them with minority labels, fit the classifier, and evaluate only on the untouched test fold. Supplementary Algorithms 1--4 give the four executed selection procedures.
+
+The pool requires \(O(Md)\) feature storage. A direct exhaustive-neighbor implementation of BND scoring has \(O(Mnd)\) distance cost for \(n\) original training observations and \(d\) features; a nearest-neighbor index can change the observed cost. DEN also requires original-training neighbor queries, and DIV adds seeded \(k\)-means with approximate \(O(TMKd)\) work for \(T\) iterations. Weighted sampling and four candidate generators add further cost. We therefore report observed sequential timings in addition to these selection-stage bounds.
+
+
+\section{Experimental Setup}\label{sec:4}
+
+% Source paragraph 96
+The evaluation of the proposed framework is designed as a multi-layered analysis under different data regimes and different classifier families, rather than a narrow comparison based on a single success metric or a single learning algorithm. Comparisons are conducted at two levels. At the first level, four selection strategies operating on the same composite pool are compared, and the relative contribution of the boundary-focused selection approach compared to other alternatives in the pool is examined. At the second level, boundary-focused selection is compared with classical oversampling methods widely used in the literature. The same data splitting protocol is used in all experiments, the training and test sets remained the same for each method, and resampling is applied only to the training set. This paired design holds the test folds constant across methods; uncertainty still requires dataset-level statistical analysis.
+
+\subsection{Datasets and Protocol}
+
+% Source paragraph 98
+The datasets used in the study were taken from the KEEL repository, which is widely accepted in the field of imbalanced classification \cite{ref43} \cite{ref44}. A total of 44 datasets were selected; these datasets present highly different structures in terms of the number of samples, feature dimension, and imbalance between classes. While the smallest dataset is shuttle-c2-vs-c4 with 129 samples, the largest dataset is page-blocks0 with 5472 samples. The number of features varies between 3 and 19; frequently referenced examples in the literature such as ecoli, glass, yeast, vehicle, page-blocks, vowel, segment, abalone, shuttle, pima, haberman, wisconsin are represented within this diversity. The main determining variable is the imbalance ratio (\(IR = \ n_{\text{maj}}\) / \(n_{\text{min}}\)) between classes. The study covers a wide range extending from medium difficulty datasets like glass1 at the level of \(\text{IR}\  \approx \ 1.82\) to extremely unbalanced datasets like abalone19 at the level of \(\text{IR}\  \approx \ 129.44\). Approximately two-thirds of the datasets satisfy the \(\text{IR} > 5\) condition, while fourteen of them are located at the level of \(\text{IR} \geq 15\) level. This spectrum allows for the examination of how the boundary-oriented selection approach behaves not only at a single difficulty level, but in different data regimes towards medium imbalance, high imbalance, and extreme imbalance. All basic features of the datasets are presented in summary in Table~\ref{tab:1}.
+
+\clearpage
+
+\begingroup
+\fontsize{7.5}{8.5}\selectfont
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.040000\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.260000\linewidth-2\tabcolsep\relax}>{\centering\arraybackslash}p{\dimexpr 0.090000\linewidth-2\tabcolsep\relax}>{\centering\arraybackslash}p{\dimexpr 0.105000\linewidth-2\tabcolsep\relax}>{\centering\arraybackslash}p{\dimexpr 0.105000\linewidth-2\tabcolsep\relax}>{\centering\arraybackslash}p{\dimexpr 0.105000\linewidth-2\tabcolsep\relax}>{\centering\arraybackslash}p{\dimexpr 0.105000\linewidth-2\tabcolsep\relax}>{\centering\arraybackslash}p{\dimexpr 0.105000\linewidth-2\tabcolsep\relax}>{\centering\arraybackslash}p{\dimexpr 0.085000\linewidth-2\tabcolsep\relax}}
+\caption{Characteristics of the 44 datasets used in the study}\label{tab:1}\\
+\toprule
+{\fontsize{7}{8.5}\selectfont No} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Dataset\\ Name}} & {\fontsize{7}{8.5}\selectfont Features} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Total\\ Samples}} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Minority\\ Samples}} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Majority\\ Samples}} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Minority\\ Ratio (\%)}} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Majority\\ Ratio (\%)}} & {\fontsize{7}{8.5}\selectfont IR} \\
+\midrule
+\endfirsthead
+\multicolumn{9}{c}{\tablename\ \thetable\ (continued)}\\
+\toprule
+{\fontsize{7}{8.5}\selectfont No} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Dataset\\ Name}} & {\fontsize{7}{8.5}\selectfont Features} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Total\\ Samples}} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Minority\\ Samples}} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Majority\\ Samples}} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Minority\\ Ratio (\%)}} & {\fontsize{7}{8.5}\selectfont \shortstack[c]{Majority\\ Ratio (\%)}} & {\fontsize{7}{8.5}\selectfont IR} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{9}{r}{Continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+1 & abalone19 & 8 & 4174 & 32 & 4142 & 0.77 & 99.23 & 129.44 \\
+2 & abalone9-\allowbreak{}18 & 8 & 731 & 42 & 689 & 5.75 & 94.25 & 16.40 \\
+3 & ecoli-\allowbreak{}0-\allowbreak{}1-\allowbreak{}3-\allowbreak{}7\_vs\_2-\allowbreak{}6 & 7 & 281 & 7 & 274 & 2.49 & 97.51 & 39.14 \\
+4 & ecoli-\allowbreak{}0\_vs\_1 & 7 & 220 & 77 & 143 & 35.00 & 65.00 & 1.86 \\
+5 & ecoli1 & 7 & 336 & 77 & 259 & 22.92 & 77.08 & 3.36 \\
+6 & ecoli2 & 7 & 336 & 52 & 284 & 15.48 & 84.52 & 5.46 \\
+7 & ecoli3 & 7 & 336 & 35 & 301 & 10.42 & 89.58 & 8.60 \\
+8 & ecoli4 & 7 & 336 & 23 & 313 & 6.85 & 93.15 & 13.84 \\
+9 & glass-\allowbreak{}0-\allowbreak{}1-\allowbreak{}2-\allowbreak{}3\_vs\_4-\allowbreak{}5-\allowbreak{}6 & 9 & 214 & 51 & 163 & 23.83 & 76.17 & 3.20 \\
+10 & glass-\allowbreak{}0-\allowbreak{}1-\allowbreak{}6\_vs\_2 & 9 & 192 & 17 & 175 & 8.85 & 91.15 & 10.29 \\
+11 & glass-\allowbreak{}0-\allowbreak{}1-\allowbreak{}6\_vs\_5 & 9 & 184 & 9 & 175 & 4.89 & 95.11 & 19.44 \\
+12 & glass0 & 9 & 214 & 70 & 144 & 32.71 & 67.29 & 2.06 \\
+13 & glass1 & 9 & 214 & 76 & 138 & 35.51 & 64.49 & 1.82 \\
+14 & glass2 & 9 & 214 & 17 & 197 & 7.94 & 92.06 & 11.59 \\
+15 & glass4 & 9 & 214 & 13 & 201 & 6.07 & 93.93 & 15.47 \\
+16 & glass5 & 9 & 214 & 9 & 205 & 4.21 & 95.79 & 22.78 \\
+17 & glass6 & 9 & 214 & 29 & 185 & 13.55 & 86.45 & 6.38 \\
+18 & haberman & 3 & 306 & 81 & 225 & 26.47 & 73.53 & 2.78 \\
+19 & iris0 & 4 & 150 & 50 & 100 & 33.33 & 66.67 & 2.00 \\
+20 & new-\allowbreak{}thyroid1 & 5 & 215 & 35 & 180 & 16.28 & 83.72 & 5.14 \\
+21 & new-\allowbreak{}thyroid2 & 5 & 215 & 35 & 180 & 16.28 & 83.72 & 5.14 \\
+22 & page-\allowbreak{}blocks-\allowbreak{}1-\allowbreak{}3\_vs\_4 & 10 & 472 & 28 & 444 & 5.93 & 94.07 & 15.86 \\
+23 & page-\allowbreak{}blocks0 & 10 & 5472 & 559 & 4913 & 10.22 & 89.78 & 8.79 \\
+24 & pima & 8 & 768 & 268 & 500 & 34.90 & 65.10 & 1.87 \\
+25 & segment0 & 19 & 2308 & 329 & 1979 & 14.25 & 85.75 & 6.02 \\
+26 & shuttle-\allowbreak{}c0-\allowbreak{}vs-\allowbreak{}c4 & 9 & 1829 & 123 & 1706 & 6.72 & 93.28 & 13.87 \\
+27 & shuttle-\allowbreak{}c2-\allowbreak{}vs-\allowbreak{}c4 & 9 & 129 & 6 & 123 & 4.65 & 95.35 & 20.50 \\
+28 & vehicle0 & 18 & 846 & 199 & 647 & 23.52 & 76.48 & 3.25 \\
+29 & vehicle1 & 18 & 846 & 217 & 629 & 25.65 & 74.35 & 2.90 \\
+30 & vehicle2 & 18 & 846 & 218 & 628 & 25.77 & 74.23 & 2.88 \\
+31 & vehicle3 & 18 & 846 & 212 & 634 & 25.06 & 74.94 & 2.99 \\
+32 & vowel0 & 13 & 988 & 89 & 899 & 9.01 & 90.99 & 10.10 \\
+33 & wisconsin & 9 & 683 & 239 & 444 & 34.99 & 65.01 & 1.86 \\
+34 & yeast-\allowbreak{}0-\allowbreak{}5-\allowbreak{}6-\allowbreak{}7-\allowbreak{}9\_vs\_4 & 8 & 528 & 51 & 477 & 9.66 & 90.34 & 9.35 \\
+35 & yeast-\allowbreak{}1-\allowbreak{}2-\allowbreak{}8-\allowbreak{}9\_vs\_7 & 8 & 947 & 30 & 917 & 3.17 & 96.83 & 30.57 \\
+36 & yeast-\allowbreak{}1-\allowbreak{}4-\allowbreak{}5-\allowbreak{}8\_vs\_7 & 8 & 693 & 30 & 663 & 4.33 & 95.67 & 22.10 \\
+37 & yeast-\allowbreak{}1\_vs\_7 & 7 & 459 & 30 & 429 & 6.54 & 93.46 & 14.30 \\
+38 & yeast-\allowbreak{}2\_vs\_4 & 8 & 514 & 51 & 463 & 9.92 & 90.08 & 9.08 \\
+39 & yeast-\allowbreak{}2\_vs\_8 & 8 & 482 & 20 & 462 & 4.15 & 95.85 & 23.10 \\
+40 & yeast1 & 8 & 1484 & 429 & 1055 & 28.91 & 71.09 & 2.46 \\
+41 & yeast3 & 8 & 1484 & 163 & 1321 & 10.98 & 89.02 & 8.11 \\
+42 & yeast4 & 8 & 1484 & 51 & 1433 & 3.44 & 96.56 & 28.10 \\
+43 & yeast5 & 8 & 1484 & 44 & 1440 & 2.96 & 97.04 & 32.78 \\
+44 & yeast6 & 8 & 1484 & 37 & 1447 & 2.49 & 97.51 & 39.15 \\
+\end{longtable}
+\endgroup
+\clearpage
+
+% Source paragraph 102
+In the evaluation protocol, KEEL's standard 5-fold cross-validation partitions were used directly. This choice has two purposes: both to ensure that the experiments are exactly reproducible by other studies, and to control the variance that may arise from data partitioning. In each fold, the data is separated into approximately 80\% training and 20\% test; all compared methods are evaluated on the same folds. The synthetic sample generation and selection phases were applied only in the training fold, and the test data was not included in any stage of the process. This rule is considered a critical condition to prevent data leakage, which is frequently encountered in imbalanced learning applications, and to avoid the overestimation of generalization success \cite{ref45}. The final performance at the dataset level was calculated by taking the average of the values obtained from the five folds.
+
+% Revision: paired preprocessing protocol
+For the revised benchmark, each KEEL training/test pair is parsed under one shared schema. Categorical feature mappings, any numeric imputation values, and standardization parameters are fitted on the training portion only and then applied unchanged to its test portion. The minority label is determined from the training fold and retained in the paired test fold. Oversampling and all candidate-distance calculations use the transformed training features. Seeds, actual candidate counts, generator failures, and final minority counts are recorded per fold. This protocol prevents information from the test fold entering preprocessing or sample generation.
+
+The generator configurations in this revised audit use a requested proportion of \(1.00\) and random seed 42. The effective \(k_{\mathrm{safe}}\) from equation~\eqref{eq:14} is passed as \texttt{n\_neighbors} to SMOTE, ADASYN, and G-SMOTE and as \texttt{k1}, \texttt{k2}, and \texttt{k3} to MWMOTE. In the supplied 220 training folds, SMOTE, MWMOTE, and G-SMOTE each produced \(N_{\mathrm{new}}\) candidates in every fold. ADASYN produced \(N_{\mathrm{new}}\) candidates in 217 folds and none in three folds (iris0 fold 5, shuttle-c0-vs-c4 fold 3, and shuttle-c2-vs-c4 fold 1). The full composite pool still met the selection budget in all folds. Pool-composition comparisons involving ADASYN alone use complete paired datasets and report these exclusions; no missing output is replaced by another generator.
+
+\subsection{Compared Methods}
+
+% Source paragraph 104
+The comparison set is constructed to serve two different purposes. The first group consists of selection strategies used in the ablation analysis and operating on the same composite pool. Random Selection (RND) forms a reference point by drawing random samples from the pool; Diversity-Guided Selection (DIV) presents an alternative that prioritizes spatial coverage by performing balanced sampling from different regions of the pool; while Density-Guided Selection (DEN) gives priority to candidates in locally denser and representative regions. Alongside these three strategies, Boundary-Guided Selection (BND), which is the main method of the study and highlights candidates that are more instructive in terms of decision boundary information, is placed. Evaluating the same pool under four different selection principles provides a necessary isolation to reveal that the observed differences stem directly from the selection mechanism.
+
+% Source paragraph 105
+The second group consists of classical comparisons. In this context, Original (ORG), where no resampling is applied, is used as a baseline; along with Random Over-Sampling (ROS), which is the most basic approach based on replicating minority class samples, seven synthetic generators that guide the field have been added. SMOTE (SMT) is based on linear interpolation between minority neighbors. ADASYN (ADA) applies additional learning pressure to these regions by generating relatively more samples in difficult-to-learn minority regions. Two variants of Borderline-SMOTE are included in the comparison: while B-SM1 concentrates the synthesis on minority samples in the boundary region, B-SM2 exhibits a more aggressive boundary-oriented generation by also taking the majority class into account. MWMOTE (MWM) shapes the generation process around these samples by giving weight to informative minority samples. G-SMOTE (G-SM) moves the synthesis into a geometric region surrounding the minority neighbors by relaxing the interpolation constraint. Finally, K-Means SMOTE (KM-SM) first performs the clustering step and concentrates the synthesis only in safer and meaningful clusters. These nine methods together represent the main axes of the classical oversampling spectrum.
+
+% Source paragraph 106
+For all methods, the primary augmentation ratio is fixed at \(r=1.00\). Each successful method must add exactly \(N_{\text{new}}\) minority observations; failures and deviations from this target are recorded rather than silently treated as comparable runs. In methods that perform neighborhood-based generation, the number of neighbors is determined adaptively in accordance with equation~\eqref{eq:14} in order not to lead to invalid neighborhood definitions in small minority clusters. The same training/test fold, preprocessing, random-seed policy, and classifier configuration are used across methods. The basic characteristics of all the methods compared are summarized in Table~\ref{tab:2}.
+
+\clearpage
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.220000\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.600000\linewidth-2\tabcolsep\relax}>{\centering\arraybackslash}p{\dimexpr 0.180000\linewidth-2\tabcolsep\relax}}
+\caption{Compared methods and key characteristics}\label{tab:2}\\
+\toprule
+Method & Basic principle & Category \\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\tablename\ \thetable\ (continued)}\\
+\toprule
+Method & Basic principle & Category \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{Continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+\multicolumn{3}{c}{\textbf{Ablation -- selection strategies operating on the same composite pool}} \\
+Random (RND) & Draws samples from the pool randomly; does not consider structure, density, and boundary information. & \emph{Baseline} \\
+Diversity-Guided (DIV) & Spreads the selection to different regions of the pool; prioritizes spatial coverage. & Alternative \\
+Density-Guided (DEN) & Highlights candidates in locally dense and relatively more representative regions. & Alternative \\
+\textbf{Boundary-Guided (BND)} & \textbf{Selects synthetic candidates that are more instructive in terms of decision boundary information.} & Proposed \\
+\multicolumn{3}{c}{\textbf{Classical comparison -- established oversampling methods in the literature}} \\
+Original & No resampling is applied; the training set is used as is. & Reference \\
+Random Over-Sampling & Balances by randomly replicating minority samples. & Classic \\
+SMOTE & Generates synthetic samples by linear interpolation between minority neighbors. & Classic \\
+ADASYN & Performs relatively more synthesis in difficult-to-learn minority regions. & Classic \\
+Borderline-SMOTE1 & Concentrates the synthesis on minority samples in the boundary region. & Classic \\
+Borderline-SMOTE2 & Behaves more aggressively by also taking majority neighbors into account in boundary-oriented synthesis. & Classic \\
+MWMOTE & Directs the synthesis to these samples by giving weight to informative minority samples. & Classic \\
+G-SMOTE & Increases diversity by moving the synthesis to a geometric region surrounding the minority neighbors. & Classic \\
+K-Means SMOTE & First performs clustering; carries out the synthesis only in safe and meaningful clusters. & Classic \\
+\end{longtable}
+\endgroup
+\clearpage
+
+\subsection{Evaluation Criteria}
+
+% Source paragraph 111
+In order to evaluate the proposed approach without being bound only to a specific model family, three classifiers were used together: Support Vector Machine (SVM), K-Nearest Neighbors (KNN), and Random Forest (RF). The selection of this trio is not coincidental. Since SVM constructs the decision function directly around the margin while working with the RBF kernel, it presents a natural test environment in terms of evaluating the boundary-oriented selection principle. Since KNN produces the classification decision over the local neighborhood structure, it is sensitive to the spatial placement of synthetic samples and is one of the models that reflects the impact of different selection strategies most clearly. RF, on the other hand, represents a different learning dynamic with its tree-based ensemble learning and internal randomness; revealing behaviors that linear and local models do not exhibit. Together, the RBF-SVM, local-neighbor, and tree-ensemble models probe distinct decision structures. To provide a fair comparison, every method used the same classifier configuration within a fold: RBF-SVM, five-neighbor KNN, and a 100-tree RF with seed 42. Generator-specific neighborhood settings follow the training-fold minority count as specified above.
+
+% Source paragraph 112
+Accuracy alone can hide poor minority-class recognition when the majority class dominates \cite{ref46}. The revised evaluation therefore reports F1-score, Balanced Accuracy, G-Mean, area under the receiver operating characteristic curve (ROC-AUC), and Matthews correlation coefficient (MCC). The F1-score, as the harmonic mean of precision and recall, summarizes the success of accurately recognizing the minority class (equation~\eqref{eq:16}).
+
+\begin{equation}\label{eq:16}
+F1 = \frac{2\times\mathrm{Precision}\times\mathrm{Recall}}{\mathrm{Precision}+\mathrm{Recall}}
+\end{equation}
+
+% Source paragraph 114
+Balanced Accuracy balances class bias by treating sensitivity and specificity with equal weight, and in this respect, it presents a complementary view to F1 for imbalanced data (equation~\eqref{eq:17}).
+
+\begin{equation}\label{eq:17}
+\text{Balanced}\text{\ }\text{Accuracy} = \frac{(\text{Sensitivity} + \text{Specificity})}{2}
+\end{equation}
+
+% Source paragraph 116
+G-Mean, on the other hand, takes the geometric mean of sensitivity and specificity, thereby penalizing models that show high performance in only one class and neglect the other (equation~\eqref{eq:18}).
+
+\begin{equation}\label{eq:18}
+G\text{-}Mean = \sqrt{Sensitivity \times Specificity}
+\end{equation}
+
+% Revision: additional metrics
+ROC-AUC measures how well the classifier ranks minority observations above majority observations over all score thresholds. SVM decision values and the positive-class probabilities from KNN and RF supply the ranking scores. MCC summarizes all four confusion-matrix cells and remains informative when the classes are imbalanced (equation~\eqref{eq:19}). If its denominator is zero, MCC is defined as zero for that fold. F1, Balanced Accuracy, G-Mean, and MCC use the classifier's predicted labels; ROC-AUC uses ranking scores.
+
+\begin{equation}\label{eq:19}
+\mathrm{MCC}=\frac{TP\cdot TN-FP\cdot FN}
+{\sqrt{(TP+FP)(TP+FN)(TN+FP)(TN+FN)}}
+\end{equation}
+
+% Revised statistical analysis of complete five-fold dataset means
+Together, the five metrics describe minority recognition, class balance, ranking quality, and agreement across the confusion matrix. Each fold metric is averaged within a dataset first; the descriptive tables then average the complete five-fold dataset means. Mean Rank averages the within-dataset ranks on a common set of methods and datasets, with a lower rank indicating a better result. Descriptive averages and ranks do not by themselves establish statistical superiority \cite{ref47} \cite{ref48}.
+
+For each classifier--metric block, we used a Friedman test for the four fixed-pool selection rules and for the ten classical methods on their common complete set. Paired, two-sided Wilcoxon tests compare historical BND with each other selector and each classical method on datasets where both completed all five folds. We report mean paired differences, wins/ties/losses, and Holm-adjusted values across all 60 selector contrasts and separately across all 135 classical contrasts. The 44 KEEL tasks include related variants of source datasets, so these adjusted values are descriptive rather than independent-source replication.
+
+The pool ablation applies the same historical BND selector and budget to each single-generator pool, each leave-one-out pool, and the full pool. Its 120 contrasts receive a separate Holm correction. External results are kept in two protocol groups: three larger sources examined in an earlier exploratory transfer check (OpenML IDs 310, 1120, and 182; five stratified folds with seed 20261125), and four later OpenML sources (IDs 1487, 1489, 1116, and 46956) fixed by metadata before classifier outcomes were inspected. The rarest original class is positive; multiclass satimage is reduced to its rarest class against all other labels. The four later sources use five stratified outer folds. In each outer training fold, a three-fold inner validation selects one of standalone SMOTE, historical BND, or historical DIV for each classifier by mean inner G-Mean, with SMOTE winning exact ties. Imputation, standardization, pool generation, and candidate selection are fitted within each inner training portion. The chosen method is then refitted on the complete outer training fold. This adaptive test is exploratory and was not used to revise the primary BGPO rule.
+
+\section{Results and Discussion}\label{sec:5}
+
+All 44 KEEL tasks supplied five predefined folds. Four selectors used the same indexed candidate pool and equal augmentation budget. The historical BND implementation reproduced the saved notebook outcomes at fold level. Three ADASYN pool-generation attempts returned no candidates, but the full pool met the selection budget in all 220 folds. Missing classical-method fold results are excluded from complete-dataset comparisons and their denominators are reported.
+
+\subsection{Effect of Selecting from the Same Pool}
+
+Table~\ref{tab:3} gives the five-fold dataset means and ranks for the historical selectors. Boundary selection exceeds density selection on KNN balanced accuracy and G-Mean by 0.013 and 0.015, and on RF balanced accuracy and G-Mean by 0.013 and 0.018; these four paired comparisons remain below 0.05 after Holm adjustment across all 60 selector contrasts. The effects establish that selection changes outcomes even when candidate supply and final budget are fixed. They do not show that the boundary rule is best in every classifier--metric block. The complete paired set is in the Supplementary Information.
+
+\input{tables/table3.tex}
+
+\subsection{Established Oversampling Baselines}
+
+Table~\ref{tab:4} reports descriptive means and dataset counts for each method. Table~\ref{tab:5} isolates the matched historical BND--SMOTE comparison, avoiding comparisons of means over different dataset sets. The BND-minus-SMOTE G-Mean differences are -0.009 for SVM, approximately zero for KNN, and -0.010 for RF; no BND--SMOTE contrast survives the stated adjustment. The primary data therefore do not support broad superiority over SMOTE.
+
+\input{tables/table4.tex}
+\input{tables/table5.tex}
+
+Table~\ref{tab:6} identifies seven positive BND contrasts against established baselines that survive the stricter correction over all 135 classical contrasts. These include KNN balanced accuracy and G-Mean against ROS and Borderline-SMOTE2, and RF G-Mean against ROS. These are specific classifier--metric comparisons, not evidence that BND uniformly dominates classical oversampling.
+
+\input{tables/table6.tex}
+
+\subsection{Pool Composition, Duplication, and Cost}
+
+The four generators form a diverse candidate supply, but its usefulness is empirical. Table~\ref{tab:7} keeps the BND selector and budget fixed while replacing the full pool with a SMOTE-only pool. None of the three G-Mean differences survives Holm correction; the complete nine-pool ablation likewise finds no full-versus-component G-Mean advantage surviving the 120-test correction. The multi-generator choice is consequently a controlled design axis, not a demonstrated optimal mix. RF scores can change with the insertion order of the selected synthetic rows, so the pool experiment preserves its recorded row order and treats RF differences cautiously.
+
+\input{tables/table7.tex}
+
+The indexed pool includes coincident candidate coordinates. In the saved 44-dataset audit, 50,394 of 447,790 candidate positions were excess coordinate duplicates; the historical BND selections contained 4,671 excess selected positions among 112,298. To measure computational cost under the same conditions, we timed the complete four-generator pool plus historical BND selection and standalone SMOTE generation on each of the 220 KEEL training folds, with three repetitions and alternating execution order. Median fold times were 0.0300 and 0.00083 seconds, respectively; the median paired ratio was 38.2, and BND was slower on all 220 folds. These timings exclude classifier fitting and peak memory, and describe one machine and software environment. The additional cost is substantial; the present contribution is the controlled selection comparison, not faster oversampling.
+
+\subsection{External Transfer and Adaptive Choice}
+
+Table~\ref{tab:8} separates three earlier exploratory external sources from four later sources fixed before their outcomes were viewed. Historical BND has higher G-Mean than standalone SMOTE in 5/9 earlier and 5/12 later source--classifier blocks. The positive blocks include mammography--KNN (+0.0118), satimage--RF (+0.0180), musk--SVM (+0.0067), and seismic-bumps--KNN (see table for exact paired values). Across seven sources the count is 10/21, which is neither a majority nor evidence of a general gain. These source-level blocks are descriptive, and the first three had already informed exploratory work.
+
+\input{tables/table8.tex}
+
+The inner-validation adaptive rule was fixed before the four later outcomes and selected SMOTE in 24, historical DIV in 19, and historical BND in 17 of the 60 classifier--outer-fold decisions. Against standalone SMOTE, it improved G-Mean in 4 of 12 source--classifier blocks and declined in 8; its unweighted mean block difference was -0.0026. Its median inner-decision time was 12.7 seconds per outer fold. It is therefore a useful negative transfer check, not a validated replacement for the proposed selection rule. In the musk source, related molecular conformations can appear in different random folds; for seismic-bumps, four symbolic predictors were excluded from the numerical comparison. These limitations further restrict transfer claims.
+
+\subsection{Interpretation and Limitations}
+
+The historical score measures class mixing among original training neighbors. It can favor a useful boundary location, but high overlap can also make synthetic minority labels ambiguous. An exploratory training-only overlap proxy was negatively associated with the BND-minus-SMOTE G-Mean difference for SVM after aggregation by related source-name family; this association is observational and was not turned into a data-dependent gate. Results are conditioned on one augmentation rate, fixed classifier templates, related KEEL variants, and four external datasets with modest transfer power. The reproducible conclusion is that candidate selection has measurable effects at fixed pool and budget; its boundary preference can help in particular settings, while standalone SMOTE remains a strong baseline.
+
+\section{Conclusions}\label{sec:6}
+
+We reconciled the BGPO method with its historical experiment code and reran the 44-dataset evaluation. Holding the candidate pool and augmentation count fixed isolates meaningful differences among four selection rules: BND improved KNN and RF class-balance metrics relative to DEN, but it did not reliably exceed standalone SMOTE. Specific favorable classical and external comparisons are reported alongside unfavorable and null comparisons. The pre-fixed adaptive inner-validation choice did not improve external transfer overall. Future work should investigate pool allocation and boundary safety with independent sources and controlled compute measurements before claiming a broadly improved oversampler.
+
+\section*{Author contributions}
+All work reported in this manuscript---conceptualization, methodology, software, analysis, writing, and visualization---was carried out by M.A.\c{S}. The author has read and agreed to the published version of the manuscript.
+
+\section*{Funding}
+This research received no external funding.
+
+\section*{Data availability}
+The KEEL datasets are publicly available at \url{https://sci2s.ugr.es/keel/datasets.php}; the external sources are OpenML IDs 310, 1120, 182, 1487, 1489, 1116, and 46956. The historical BGPO repository is \url{https://github.com/akifsahman/BGPO}. Fold-level results, experiment protocols, analysis scripts, and supplementary tables accompany this revision.
+
+\section*{Acknowledgements}
+During preparation and revision, Claude (Anthropic) assisted with English-language editing. OpenAI Codex assisted with planning additional experiments, developing and running code, checking analyses, and drafting the manuscript and reviewer responses. The author retains full responsibility for the methods, results, interpretation, and final text.
+
+\section*{Competing interests}
+The author declares no conflicts of interest.
+
+\backmatter
+
+\bibliography{references}
+
+\end{document}

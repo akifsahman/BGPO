@@ -1,0 +1,53 @@
+{
+  "dataset": "MagicTelescope",
+  "fold": 4,
+  "budget": 4516,
+  "pool_size": 18064,
+  "generators": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 4516,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.05983004183508456
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 4516,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.15396233298815787
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 4516,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 105.40396970906295
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 4516,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.057639083126559854
+    }
+  },
+  "selected_intersection": 1518,
+  "reference_metric_match": true,
+  "seconds": 122.19857220794074
+}

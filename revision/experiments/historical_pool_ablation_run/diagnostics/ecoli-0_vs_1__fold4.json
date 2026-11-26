@@ -1,0 +1,98 @@
+{
+  "dataset": "ecoli-0_vs_1",
+  "fold": 4,
+  "budget": 54,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 54,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0005913341883569956
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 54,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0009002499282360077
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 54,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.011102334130555391
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 54,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0005837909411638975
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 54,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 54,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 54,
+      "duplicate_excess": 0
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 54,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 162,
+      "duplicate_excess": 0
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 162,
+      "duplicate_excess": 4
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 162,
+      "duplicate_excess": 3
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 162,
+      "duplicate_excess": 0
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 216,
+      "duplicate_excess": 1
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

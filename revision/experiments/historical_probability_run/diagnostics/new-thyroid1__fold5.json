@@ -1,0 +1,54 @@
+{
+  "dataset": "new-thyroid1",
+  "fold": 5,
+  "budget": 116,
+  "pool_size": 464,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 116,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0006050830706954002
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 116,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0008290829136967659
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 116,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0044502499513328075
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 116,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.000593625009059906
+    }
+  },
+  "same_candidate_indices": 51,
+  "historical_unique_indices": 116,
+  "reference_metric_match": true,
+  "seconds": 0.12903729197569191
+}

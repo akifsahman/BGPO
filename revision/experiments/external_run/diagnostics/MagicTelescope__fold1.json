@@ -1,0 +1,68 @@
+{
+  "dataset": "MagicTelescope",
+  "fold": 1,
+  "train_indices_sha256": "11765a8ee584ea69ec44128e710e912c20e263f8daa6da4fc71d98f394e7d2ea",
+  "test_indices_sha256": "91bbb27022d6bca922158c4848caa35b5eb013d404fc2b99f911d462e361936b",
+  "train_n": 15216,
+  "test_n": 3804,
+  "minority_train": 5351,
+  "minority_test": 1337,
+  "budget": 4514,
+  "pool_size": 18056,
+  "pool_generators": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 4514,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.05952275008894503
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 4514,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.16047820798121393
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 4514,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 107.50200645788573
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 4514,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.07470583403483033
+    }
+  },
+  "smote": {
+    "status": "ok",
+    "added": 4514,
+    "seconds": 0.05998983304016292,
+    "parameters": {
+      "proportion": 1.0,
+      "random_state": 42,
+      "n_neighbors": 5
+    }
+  },
+  "selected_intersection": 3074,
+  "seconds": 149.333145290846
+}

@@ -1,0 +1,7 @@
+{
+  "status": "post-hoc, because historical outcomes were already seen",
+  "single_change_from_corrected_full_run": "10-nearest combined-class proportion score and seeded weighted sampling without replacement, as in historical/notebook/benchmark_pipeline_pool_ablation.py",
+  "unchanged": "44 KEEL datasets, five predefined folds, train-fitted preprocessing, four-generator pool, exact budget, three classifier templates, five metrics",
+  "historical_seed": 42,
+  "reference_BND_recomputed_and_checked_per_fold": true
+}

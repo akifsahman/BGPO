@@ -1,0 +1,22 @@
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}lllrrr@{}}
+\caption{Positive matched historical BND differences surviving Holm correction across all 135 classical contrasts}\label{tab:6}\\
+\toprule
+Classifier & Metric & Comparator & $n$ & Difference & Holm $p$ \\
+\midrule
+\endfirsthead
+\toprule
+Classifier & Metric & Comparator & $n$ & Difference & Holm $p$ \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+KNN & F1 & ADASYN & 41 & +0.023 & 0.031 \\
+KNN & BAcc & ROS & 44 & +0.013 & 0.039 \\
+KNN & BAcc & B-SMOTE2 & 37 & +0.024 & 0.004 \\
+KNN & G-Mean & ROS & 44 & +0.021 & 0.026 \\
+KNN & G-Mean & B-SMOTE2 & 37 & +0.040 & 0.006 \\
+KNN & ROC-AUC & ROS & 44 & +0.014 & 0.030 \\
+RF & G-Mean & ROS & 44 & +0.036 & 0.035 \\
+\end{longtable}
+\endgroup

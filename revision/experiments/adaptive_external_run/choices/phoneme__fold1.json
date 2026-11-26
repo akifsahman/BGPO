@@ -1,0 +1,28 @@
+{
+  "dataset": "phoneme",
+  "outer_fold": 1,
+  "decision_seconds": 16.58685112488456,
+  "selection_rule": "highest mean inner GMean; exact ties SMOTE, HIST_BND, HIST_DIV",
+  "choices": {
+    "SVM_RBF": "HIST_DIV",
+    "KNN": "HIST_BND",
+    "RandomForest": "HIST_BND"
+  },
+  "inner_mean_GMean": {
+    "SVM_RBF": {
+      "SMOTE": 0.8257924695349074,
+      "HIST_BND": 0.8221517455475542,
+      "HIST_DIV": 0.8272151655712389
+    },
+    "KNN": {
+      "SMOTE": 0.842597780222975,
+      "HIST_BND": 0.8440512868125444,
+      "HIST_DIV": 0.8390068602702803
+    },
+    "RandomForest": {
+      "SMOTE": 0.8791268200798452,
+      "HIST_BND": 0.8831491272515596,
+      "HIST_DIV": 0.8789717097575497
+    }
+  }
+}

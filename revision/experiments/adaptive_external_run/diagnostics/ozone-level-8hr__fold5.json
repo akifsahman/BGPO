@@ -1,0 +1,53 @@
+{
+  "dataset": "ozone-level-8hr",
+  "fold": 5,
+  "source_sha256": "da8512c7e5a86502c61639e1443a4d2958fd52fabcd2b1df0e5a74ad5de157c9",
+  "choices_saved_before_outer_test": true,
+  "decision_seconds": 10.097979459213093,
+  "outer_budget": 1772,
+  "outer_pool_size": 7088,
+  "outer_generators": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 1772,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.002847749972715974
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 1772,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.004632749827578664
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 1772,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.18496887502260506
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 1772,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.007302749902009964
+    }
+  }
+}

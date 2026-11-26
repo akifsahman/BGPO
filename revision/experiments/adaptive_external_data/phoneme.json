@@ -1,0 +1,26 @@
+{
+  "requested_name": "phoneme",
+  "openml_data_id": 1489,
+  "openml_source_name": "phoneme",
+  "openml_version": "1",
+  "source_url": "https://www.openml.org/d/1489",
+  "sha256_csv": "6d6a6ab73e87b6811e3bd937e5deec6207463d888e17dc50b64f2de31e726c1b",
+  "observations": 5404,
+  "numeric_features": 5,
+  "excluded_wholly_nonnumeric_columns": [],
+  "original_target_counts": {
+    "1": 3818,
+    "2": 1586
+  },
+  "minority_original_label": "2",
+  "minority_count": 1586,
+  "majority_count": 3818,
+  "missing_feature_cells": 0,
+  "feature_names": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5"
+  ]
+}

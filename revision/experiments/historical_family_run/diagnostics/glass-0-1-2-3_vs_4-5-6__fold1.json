@@ -1,0 +1,13 @@
+{
+  "dataset": "glass-0-1-2-3_vs_4-5-6",
+  "fold": 1,
+  "budget": 91,
+  "pool_size": 364,
+  "duplicate_excess": {
+    "HIST_RND": 2,
+    "HIST_DEN": 4,
+    "HIST_DIV": 3,
+    "HIST_BND": 3
+  },
+  "historical_BND_reference_match": true
+}

@@ -1,0 +1,8 @@
+{
+  "status": "exploratory: these three sources were already viewed before this summary",
+  "source_count": 3,
+  "source_classifier_blocks": 9,
+  "GMean_better_blocks": 5,
+  "GMean_worse_blocks": 4,
+  "GMean_mean_difference_over_nine_blocks": 0.002474140139983822
+}

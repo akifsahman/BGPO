@@ -1,0 +1,54 @@
+{
+  "dataset": "segment0",
+  "fold": 2,
+  "budget": 1320,
+  "pool_size": 5280,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 1320,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0042827080469578505
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 1320,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0038728751242160797
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 1320,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.1168251249473542
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 1320,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0013754998799413443
+    }
+  },
+  "same_candidate_indices": 633,
+  "historical_unique_indices": 1320,
+  "reference_metric_match": true,
+  "seconds": 0.7701900829561055
+}

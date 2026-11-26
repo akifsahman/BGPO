@@ -1,0 +1,98 @@
+{
+  "dataset": "abalone9-18",
+  "fold": 2,
+  "budget": 519,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 519,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0010132079478353262
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 519,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0012687498237937689
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 519,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.01521566603332758
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 519,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0006393331568688154
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 519,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 519,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 519,
+      "duplicate_excess": 0
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 519,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 1557,
+      "duplicate_excess": 3
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 1557,
+      "duplicate_excess": 13
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 1557,
+      "duplicate_excess": 33
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 1557,
+      "duplicate_excess": 14
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 2076,
+      "duplicate_excess": 17
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

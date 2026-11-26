@@ -1,0 +1,97 @@
+{
+  "dataset": "shuttle-c0-vs-c4",
+  "fold": 3,
+  "budget": 1267,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 1267,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.001775749959051609
+    },
+    "ADASYN": {
+      "status": "empty",
+      "candidates": 0,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0011286670342087746
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 1267,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.01759408414363861
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 1267,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0008572919759899378
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 1267,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "pool_short",
+      "size": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 1267,
+      "duplicate_excess": 0
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 1267,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 2534,
+      "duplicate_excess": 0
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 3801,
+      "duplicate_excess": 28
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 2534,
+      "duplicate_excess": 57
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 2534,
+      "duplicate_excess": 0
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 3801,
+      "duplicate_excess": 28
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

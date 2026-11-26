@@ -1,0 +1,98 @@
+{
+  "dataset": "ecoli4",
+  "fold": 4,
+  "budget": 237,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 237,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0007186250295490026
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 237,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0009025000035762787
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 237,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.004436624934896827
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 237,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0005842088721692562
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 237,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 237,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 237,
+      "duplicate_excess": 120
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 237,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 711,
+      "duplicate_excess": 39
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 711,
+      "duplicate_excess": 50
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 711,
+      "duplicate_excess": 8
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 711,
+      "duplicate_excess": 41
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 948,
+      "duplicate_excess": 30
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

@@ -1,0 +1,97 @@
+{
+  "dataset": "iris0",
+  "fold": 5,
+  "budget": 40,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 40,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.000621875049546361
+    },
+    "ADASYN": {
+      "status": "empty",
+      "candidates": 0,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.000516542000696063
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 40,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.004339999984949827
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 40,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0006129590328782797
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 40,
+      "duplicate_excess": 1
+    },
+    "ONLY_ADASYN": {
+      "status": "pool_short",
+      "size": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 40,
+      "duplicate_excess": 0
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 40,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 80,
+      "duplicate_excess": 0
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 120,
+      "duplicate_excess": 0
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 80,
+      "duplicate_excess": 2
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 80,
+      "duplicate_excess": 0
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 120,
+      "duplicate_excess": 0
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

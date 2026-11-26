@@ -1,0 +1,6 @@
+{
+  "status": "post-hoc historical selector-family audit",
+  "selector_source": "historical/notebook/benchmark_pipeline_pool_ablation.py",
+  "unchanged": "corrected 44-KEEL folds, training-only preprocessing, four-generator pool, budget, classifiers, metrics",
+  "historical_BND_reference_verified_per_fold": true
+}

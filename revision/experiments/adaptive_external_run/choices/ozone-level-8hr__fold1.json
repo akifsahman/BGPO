@@ -1,0 +1,28 @@
+{
+  "dataset": "ozone-level-8hr",
+  "outer_fold": 1,
+  "decision_seconds": 10.622651666868478,
+  "selection_rule": "highest mean inner GMean; exact ties SMOTE, HIST_BND, HIST_DIV",
+  "choices": {
+    "SVM_RBF": "SMOTE",
+    "KNN": "HIST_BND",
+    "RandomForest": "HIST_DIV"
+  },
+  "inner_mean_GMean": {
+    "SVM_RBF": {
+      "SMOTE": 0.7815294616759393,
+      "HIST_BND": 0.7739813069490276,
+      "HIST_DIV": 0.7765837587971353
+    },
+    "KNN": {
+      "SMOTE": 0.8016932349512863,
+      "HIST_BND": 0.8074903645463362,
+      "HIST_DIV": 0.7938971460726497
+    },
+    "RandomForest": {
+      "SMOTE": 0.6266701753357808,
+      "HIST_BND": 0.6393145435588173,
+      "HIST_DIV": 0.6542547975840298
+    }
+  }
+}

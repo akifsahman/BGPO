@@ -1,0 +1,98 @@
+{
+  "dataset": "yeast-2_vs_8",
+  "fold": 4,
+  "budget": 354,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 354,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0008640419691801071
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 354,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0010321659501641989
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 354,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.006114209070801735
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 354,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0011690829414874315
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 354,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 354,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 354,
+      "duplicate_excess": 77
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 354,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 1062,
+      "duplicate_excess": 29
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 1062,
+      "duplicate_excess": 28
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 1062,
+      "duplicate_excess": 14
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 1062,
+      "duplicate_excess": 23
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 1416,
+      "duplicate_excess": 25
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

@@ -1,0 +1,53 @@
+{
+  "dataset": "mammography",
+  "fold": 4,
+  "budget": 8531,
+  "pool_size": 34124,
+  "generators": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 8531,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.01068191695958376
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 8531,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.01539191696792841
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 8531,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.3146467921324074
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 8531,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.002144250087440014
+    }
+  },
+  "selected_intersection": 2698,
+  "reference_metric_match": true,
+  "seconds": 5.500038082944229
+}

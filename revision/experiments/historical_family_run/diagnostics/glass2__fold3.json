@@ -1,0 +1,13 @@
+{
+  "dataset": "glass2",
+  "fold": 3,
+  "budget": 143,
+  "pool_size": 572,
+  "duplicate_excess": {
+    "HIST_RND": 13,
+    "HIST_DEN": 12,
+    "HIST_DIV": 20,
+    "HIST_BND": 9
+  },
+  "historical_BND_reference_match": true
+}

@@ -1,0 +1,28 @@
+{
+  "dataset": "seismic-bumps",
+  "outer_fold": 4,
+  "decision_seconds": 4.296599583001807,
+  "selection_rule": "highest mean inner GMean; exact ties SMOTE, HIST_BND, HIST_DIV",
+  "choices": {
+    "SVM_RBF": "HIST_DIV",
+    "KNN": "HIST_DIV",
+    "RandomForest": "HIST_BND"
+  },
+  "inner_mean_GMean": {
+    "SVM_RBF": {
+      "SMOTE": 0.6107499997821532,
+      "HIST_BND": 0.6054946470847892,
+      "HIST_DIV": 0.623836961852719
+    },
+    "KNN": {
+      "SMOTE": 0.5608084434615161,
+      "HIST_BND": 0.5637767250895352,
+      "HIST_DIV": 0.5750013055920524
+    },
+    "RandomForest": {
+      "SMOTE": 0.44928790530847834,
+      "HIST_BND": 0.4814944080516746,
+      "HIST_DIV": 0.4527182849174595
+    }
+  }
+}

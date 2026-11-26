@@ -1,0 +1,98 @@
+{
+  "dataset": "yeast-2_vs_4",
+  "fold": 5,
+  "budget": 330,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 330,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0008280829060822725
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 330,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0013245409354567528
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 330,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.015445374883711338
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 330,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0008069581817835569
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 330,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 330,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 330,
+      "duplicate_excess": 2
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 330,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 990,
+      "duplicate_excess": 4
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 990,
+      "duplicate_excess": 8
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 990,
+      "duplicate_excess": 16
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 990,
+      "duplicate_excess": 5
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 1320,
+      "duplicate_excess": 8
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

@@ -1,0 +1,68 @@
+{
+  "dataset": "mammography",
+  "fold": 3,
+  "train_indices_sha256": "8150005a2503e4a3e5c9fcc627449220936d87840be89949856e371f80084b5f",
+  "test_indices_sha256": "938128ba4f2e1c71503961151f5251b2887f3e270b0a1f7daf60f13028109d92",
+  "train_n": 8946,
+  "test_n": 2237,
+  "minority_train": 208,
+  "minority_test": 52,
+  "budget": 8530,
+  "pool_size": 34120,
+  "pool_generators": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 8530,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.008560916176065803
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 8530,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.011527832830324769
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 8530,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.30296558304689825
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 8530,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.002156957983970642
+    }
+  },
+  "smote": {
+    "status": "ok",
+    "added": 8530,
+    "seconds": 0.008613500045612454,
+    "parameters": {
+      "proportion": 1.0,
+      "random_state": 42,
+      "n_neighbors": 5
+    }
+  },
+  "selected_intersection": 5739,
+  "seconds": 13.295713667059317
+}

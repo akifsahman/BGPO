@@ -1,0 +1,53 @@
+{
+  "dataset": "phoneme",
+  "fold": 1,
+  "source_sha256": "6d6a6ab73e87b6811e3bd937e5deec6207463d888e17dc50b64f2de31e726c1b",
+  "choices_saved_before_outer_test": true,
+  "decision_seconds": 16.58685112488456,
+  "outer_budget": 1785,
+  "outer_pool_size": 7140,
+  "outer_generators": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 1785,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.004838665947318077
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 1785,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.011463332921266556
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 1785,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 6.043911959044635
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 1785,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.004022333072498441
+    }
+  }
+}

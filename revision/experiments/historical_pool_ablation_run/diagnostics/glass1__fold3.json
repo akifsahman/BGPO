@@ -1,0 +1,98 @@
+{
+  "dataset": "glass1",
+  "fold": 3,
+  "budget": 49,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 49,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0005914592184126377
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 49,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0008828339632600546
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 49,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.02507120813243091
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 49,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.000728667015209794
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 49,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 49,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 49,
+      "duplicate_excess": 0
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 49,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 147,
+      "duplicate_excess": 1
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 147,
+      "duplicate_excess": 4
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 147,
+      "duplicate_excess": 2
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 147,
+      "duplicate_excess": 2
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 196,
+      "duplicate_excess": 2
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

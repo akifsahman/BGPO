@@ -1,0 +1,54 @@
+{
+  "dataset": "pima",
+  "fold": 1,
+  "budget": 186,
+  "pool_size": 744,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 186,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0009969999082386494
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 186,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0020373340230435133
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 186,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.2762873750180006
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 186,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0010547090787440538
+    }
+  },
+  "same_candidate_indices": 50,
+  "historical_unique_indices": 186,
+  "reference_metric_match": true,
+  "seconds": 0.5003552080597728
+}

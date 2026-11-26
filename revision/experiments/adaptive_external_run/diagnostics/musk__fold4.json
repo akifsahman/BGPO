@@ -1,0 +1,53 @@
+{
+  "dataset": "musk",
+  "fold": 4,
+  "source_sha256": "eebf00e6821e7054da24ce01e1c538648e8db9783b54a8df68466a6f9a2883bb",
+  "choices_saved_before_outer_test": true,
+  "decision_seconds": 47.059847459197044,
+  "outer_budget": 3651,
+  "outer_pool_size": 14604,
+  "outer_generators": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 3651,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.013227290939539671
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 3651,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.017412709072232246
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 3651,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 2.6356864168774337
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 3651,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.019961917074397206
+    }
+  }
+}

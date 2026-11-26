@@ -1,0 +1,54 @@
+{
+  "dataset": "vowel0",
+  "fold": 1,
+  "budget": 646,
+  "pool_size": 2584,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 646,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0012466670013964176
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 646,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0018212089780718088
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 646,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.04333249991759658
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 646,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.00082949991337955
+    }
+  },
+  "same_candidate_indices": 184,
+  "historical_unique_indices": 646,
+  "reference_metric_match": true,
+  "seconds": 0.33417262486182153
+}

@@ -1,0 +1,13 @@
+{
+  "dataset": "iris0",
+  "fold": 3,
+  "budget": 40,
+  "pool_size": 160,
+  "duplicate_excess": {
+    "HIST_RND": 1,
+    "HIST_DEN": 0,
+    "HIST_DIV": 0,
+    "HIST_BND": 1
+  },
+  "historical_BND_reference_match": true
+}

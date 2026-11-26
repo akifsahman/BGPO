@@ -1,0 +1,13 @@
+{
+  "dataset": "yeast3",
+  "fold": 5,
+  "budget": 926,
+  "pool_size": 3704,
+  "duplicate_excess": {
+    "HIST_RND": 11,
+    "HIST_DEN": 47,
+    "HIST_DIV": 27,
+    "HIST_BND": 14
+  },
+  "historical_BND_reference_match": true
+}

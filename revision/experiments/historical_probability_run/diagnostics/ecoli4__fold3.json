@@ -1,0 +1,54 @@
+{
+  "dataset": "ecoli4",
+  "fold": 3,
+  "budget": 237,
+  "pool_size": 948,
+  "generator_diagnostics": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 237,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0007192918565124273
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 237,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0009120828472077847
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 237,
+      "parameters": {
+        "proportion": 1.0,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5,
+        "random_state": 42
+      },
+      "seconds": 0.003690832993015647
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 237,
+      "parameters": {
+        "proportion": 1.0,
+        "n_neighbors": 5,
+        "random_state": 42
+      },
+      "seconds": 0.0005269588436931372
+    }
+  },
+  "same_candidate_indices": 89,
+  "historical_unique_indices": 237,
+  "reference_metric_match": true,
+  "seconds": 0.1433445829898119
+}

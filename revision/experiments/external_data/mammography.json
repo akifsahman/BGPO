@@ -1,0 +1,27 @@
+{
+  "requested_name": "mammography",
+  "openml_data_id": 310,
+  "openml_source_name": "mammography",
+  "openml_version": "1",
+  "source_url": "https://www.openml.org/d/310",
+  "sha256_csv": "bc1c83152c1c0471234a0c8cd856be65b7f9c05371fa48e1cbc8a2897ff2172d",
+  "observations": 11183,
+  "numeric_features": 6,
+  "excluded_all_nonnumeric_columns": [],
+  "original_target_counts": {
+    "-1": 10923,
+    "1": 260
+  },
+  "minority_original_label": "1",
+  "minority_count": 260,
+  "majority_count": 10923,
+  "missing_feature_cells": 0,
+  "feature_names": [
+    "attr1",
+    "attr2",
+    "attr3",
+    "attr4",
+    "attr5",
+    "attr6"
+  ]
+}

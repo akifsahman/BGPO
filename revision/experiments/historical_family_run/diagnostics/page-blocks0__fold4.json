@@ -1,0 +1,13 @@
+{
+  "dataset": "page-blocks0",
+  "fold": 4,
+  "budget": 3484,
+  "pool_size": 13936,
+  "duplicate_excess": {
+    "HIST_RND": 95,
+    "HIST_DEN": 433,
+    "HIST_DIV": 288,
+    "HIST_BND": 67
+  },
+  "historical_BND_reference_match": true
+}

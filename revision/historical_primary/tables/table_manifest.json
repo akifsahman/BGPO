@@ -1,0 +1,11 @@
+{
+  "table3_rows": 15,
+  "table4_rows": 30,
+  "table5_rows": 15,
+  "table6_rows": 7,
+  "table7_rows": 3,
+  "table8_rows": 21,
+  "external_BND_GMean_wins": 10,
+  "external_BND_GMean_losses": 11,
+  "external_mean_difference": 0.0009480228135457973
+}

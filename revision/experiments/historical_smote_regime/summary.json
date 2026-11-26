@@ -1,0 +1,38 @@
+{
+  "status": "post-hoc exploratory, no threshold or gate validated",
+  "associations": [
+    {
+      "classifier": "KNN",
+      "n_datasets": 44,
+      "n_source_families": 14,
+      "family_spearman_rho": 0.09050860838510442,
+      "p_raw": 0.7583027972489738,
+      "mean_GMean_delta_all": -6.723418116075242e-05,
+      "mean_GMean_delta_overlap_le_0_5": 0.004086823599511002,
+      "n_overlap_le_0_5": 30,
+      "p_holm_three_family_tests": 0.7583027972489738
+    },
+    {
+      "classifier": "RandomForest",
+      "n_datasets": 44,
+      "n_source_families": 14,
+      "family_spearman_rho": -0.25742589834812624,
+      "p_raw": 0.3742678732916349,
+      "mean_GMean_delta_all": -0.009778279778174836,
+      "mean_GMean_delta_overlap_le_0_5": -0.0011160560586215692,
+      "n_overlap_le_0_5": 30,
+      "p_holm_three_family_tests": 0.7485357465832698
+    },
+    {
+      "classifier": "SVM_RBF",
+      "n_datasets": 44,
+      "n_source_families": 14,
+      "family_spearman_rho": -0.6755972603773723,
+      "p_raw": 0.008005083628776423,
+      "mean_GMean_delta_all": -0.009371705682940634,
+      "mean_GMean_delta_overlap_le_0_5": -0.002271422136163892,
+      "n_overlap_le_0_5": 30,
+      "p_holm_three_family_tests": 0.02401525088632927
+    }
+  ]
+}

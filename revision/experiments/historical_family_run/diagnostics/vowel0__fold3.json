@@ -1,0 +1,13 @@
+{
+  "dataset": "vowel0",
+  "fold": 3,
+  "budget": 646,
+  "pool_size": 2584,
+  "duplicate_excess": {
+    "HIST_RND": 13,
+    "HIST_DEN": 13,
+    "HIST_DIV": 6,
+    "HIST_BND": 11
+  },
+  "historical_BND_reference_match": true
+}

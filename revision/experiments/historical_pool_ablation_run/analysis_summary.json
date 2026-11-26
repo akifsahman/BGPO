@@ -1,0 +1,81 @@
+{
+  "status": "exploratory after earlier KEEL outcomes viewed",
+  "full_reference_complete": true,
+  "primary_full_minus_smote_only_GMean": [
+    {
+      "classifier": "SVM_RBF",
+      "metric": "GMean",
+      "comparator": "ONLY_SMOTE",
+      "n_datasets": 44,
+      "full_mean_on_pair": 0.823377638298698,
+      "comparator_mean_on_pair": 0.8327493439816386,
+      "full_minus_comparator": -0.009371705682940637,
+      "wins": 18,
+      "ties": 8,
+      "losses": 18,
+      "p_raw": 0.6478676741289531,
+      "p_holm_all120": 1.0,
+      "p_holm_primary3": 1.0
+    },
+    {
+      "classifier": "KNN",
+      "metric": "GMean",
+      "comparator": "ONLY_SMOTE",
+      "n_datasets": 44,
+      "full_mean_on_pair": 0.8414144351668514,
+      "comparator_mean_on_pair": 0.841481669348012,
+      "full_minus_comparator": -6.723418116074106e-05,
+      "wins": 22,
+      "ties": 4,
+      "losses": 18,
+      "p_raw": 0.5283593272709486,
+      "p_holm_all120": 1.0,
+      "p_holm_primary3": 1.0
+    },
+    {
+      "classifier": "RandomForest",
+      "metric": "GMean",
+      "comparator": "ONLY_SMOTE",
+      "n_datasets": 44,
+      "full_mean_on_pair": 0.7794237033000392,
+      "comparator_mean_on_pair": 0.7956691065369662,
+      "full_minus_comparator": -0.01624540323692715,
+      "wins": 19,
+      "ties": 6,
+      "losses": 19,
+      "p_raw": 0.1642493049547843,
+      "p_holm_all120": 1.0,
+      "p_holm_primary3": 0.4927479148643529
+    }
+  ],
+  "RF_order_sensitivity": [
+    {
+      "order": "draw",
+      "n_datasets": 44,
+      "full_minus_smote_only_GMean": -0.01624540323692715,
+      "wins": 19,
+      "ties": 6,
+      "losses": 19,
+      "p_raw": 0.1642493049547843
+    },
+    {
+      "order": "canonical",
+      "n_datasets": 44,
+      "full_minus_smote_only_GMean": -0.004035689664709115,
+      "wins": 21,
+      "ties": 4,
+      "losses": 19,
+      "p_raw": 0.8885700071519029
+    }
+  ],
+  "Holm120_significant": [
+    {
+      "classifier": "KNN",
+      "metric": "F1",
+      "comparator": "ONLY_ADASYN",
+      "n_datasets": 41,
+      "full_minus_comparator": 0.02349553883799039,
+      "p_holm_all120": 0.030052446750002848
+    }
+  ]
+}

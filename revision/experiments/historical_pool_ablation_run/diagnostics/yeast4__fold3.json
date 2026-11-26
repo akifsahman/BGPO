@@ -1,0 +1,98 @@
+{
+  "dataset": "yeast4",
+  "fold": 3,
+  "budget": 1105,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 1105,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0015186250675469637
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 1105,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0020539998076856136
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 1105,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.02378508308902383
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 1105,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0007224590517580509
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 1105,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 1105,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 1105,
+      "duplicate_excess": 0
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 1105,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 3315,
+      "duplicate_excess": 20
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 3315,
+      "duplicate_excess": 26
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 3315,
+      "duplicate_excess": 81
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 3315,
+      "duplicate_excess": 47
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 4420,
+      "duplicate_excess": 46
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

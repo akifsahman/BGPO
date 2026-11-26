@@ -1,0 +1,33 @@
+{
+  "fold_rows": 8580,
+  "successful_rows": 8277,
+  "complete_dataset_method_classifier_rows": 1620,
+  "selection_common_datasets": 44,
+  "classical_common_datasets": 24,
+  "unavailable_method_counts": [
+    {
+      "method": "ADASYN",
+      "status": "count_mismatch",
+      "affected_folds": 3,
+      "affected_datasets": 3
+    },
+    {
+      "method": "Borderline_SMOTE1",
+      "status": "count_mismatch",
+      "affected_folds": 21,
+      "affected_datasets": 7
+    },
+    {
+      "method": "Borderline_SMOTE2",
+      "status": "count_mismatch",
+      "affected_folds": 21,
+      "affected_datasets": 7
+    },
+    {
+      "method": "kmeans_SMOTE",
+      "status": "count_mismatch",
+      "affected_folds": 56,
+      "affected_datasets": 15
+    }
+  ]
+}

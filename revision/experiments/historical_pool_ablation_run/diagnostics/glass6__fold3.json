@@ -1,0 +1,98 @@
+{
+  "dataset": "glass6",
+  "fold": 3,
+  "budget": 125,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 125,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0006095001008361578
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 125,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0007925841491669416
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 125,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.0063014167826622725
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 125,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0005983330775052309
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 125,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 125,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 125,
+      "duplicate_excess": 28
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 125,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 375,
+      "duplicate_excess": 19
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 375,
+      "duplicate_excess": 38
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 375,
+      "duplicate_excess": 17
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 375,
+      "duplicate_excess": 25
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 500,
+      "duplicate_excess": 22
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

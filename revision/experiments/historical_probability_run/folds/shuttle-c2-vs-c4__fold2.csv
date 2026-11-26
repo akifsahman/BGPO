@@ -1,0 +1,4 @@
+dataset,fold,method,classifier,status,budget,pool_size,F1,BalancedAccuracy,GMean,ROC_AUC,MCC,fit_seconds
+shuttle-c2-vs-c4,2,HIST_PROB_BND,SVM_RBF,ok,93,372,1.0,1.0,1.0,1.0,1.0,0.0007454159203916788
+shuttle-c2-vs-c4,2,HIST_PROB_BND,KNN,ok,93,372,1.0,1.0,1.0,1.0,1.0,0.00039537507109344006
+shuttle-c2-vs-c4,2,HIST_PROB_BND,RandomForest,ok,93,372,1.0,1.0,1.0,1.0,1.0,0.04543845891021192

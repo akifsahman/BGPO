@@ -1,0 +1,13 @@
+{
+  "dataset": "new-thyroid2",
+  "fold": 2,
+  "budget": 116,
+  "pool_size": 464,
+  "duplicate_excess": {
+    "HIST_RND": 4,
+    "HIST_DEN": 6,
+    "HIST_DIV": 4,
+    "HIST_BND": 3
+  },
+  "historical_BND_reference_match": true
+}

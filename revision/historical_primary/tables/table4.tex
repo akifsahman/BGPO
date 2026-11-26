@@ -1,0 +1,45 @@
+\begingroup\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}llrrrrrr@{}}
+\caption{Complete-dataset descriptive means of the historical BND rule and classical methods}\label{tab:4}\\
+\toprule
+Classifier & Method & $n$ & F1 & BAcc & G-Mean & ROC-AUC & MCC \\
+\midrule
+\endfirsthead
+\toprule
+Classifier & Method & $n$ & F1 & BAcc & G-Mean & ROC-AUC & MCC \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+SVM (RBF) & Original & 44 & 0.578 & 0.756 & 0.620 & 0.905 & 0.562 \\
+SVM (RBF) & ROS & 44 & 0.662 & 0.855 & 0.839 & 0.915 & 0.628 \\
+SVM (RBF) & SMOTE & 44 & 0.663 & 0.849 & 0.833 & 0.915 & 0.626 \\
+SVM (RBF) & ADASYN & 41 & 0.628 & 0.838 & 0.819 & 0.904 & 0.588 \\
+SVM (RBF) & B-SMOTE1 & 37 & 0.665 & 0.826 & 0.793 & 0.902 & 0.617 \\
+SVM (RBF) & B-SMOTE2 & 37 & 0.650 & 0.830 & 0.804 & 0.899 & 0.601 \\
+SVM (RBF) & MWMOTE & 44 & 0.657 & 0.840 & 0.815 & 0.909 & 0.616 \\
+SVM (RBF) & G-SMOTE & 44 & 0.670 & 0.845 & 0.824 & 0.915 & 0.631 \\
+SVM (RBF) & K-Means SMOTE & 29 & 0.774 & 0.854 & 0.836 & 0.937 & 0.734 \\
+SVM (RBF) & BND & 44 & 0.670 & 0.846 & 0.823 & 0.912 & 0.629 \\
+KNN & Original & 44 & 0.626 & 0.780 & 0.680 & 0.875 & 0.597 \\
+KNN & ROS & 44 & 0.661 & 0.842 & 0.821 & 0.872 & 0.616 \\
+KNN & SMOTE & 44 & 0.651 & 0.854 & 0.841 & 0.886 & 0.612 \\
+KNN & ADASYN & 41 & 0.617 & 0.845 & 0.833 & 0.879 & 0.575 \\
+KNN & B-SMOTE1 & 37 & 0.645 & 0.821 & 0.792 & 0.867 & 0.589 \\
+KNN & B-SMOTE2 & 37 & 0.635 & 0.817 & 0.788 & 0.867 & 0.579 \\
+KNN & MWMOTE & 44 & 0.658 & 0.847 & 0.828 & 0.878 & 0.615 \\
+KNN & G-SMOTE & 44 & 0.661 & 0.850 & 0.834 & 0.882 & 0.619 \\
+KNN & K-Means SMOTE & 29 & 0.782 & 0.864 & 0.855 & 0.913 & 0.728 \\
+KNN & BND & 44 & 0.663 & 0.855 & 0.841 & 0.885 & 0.622 \\
+RF & Original & 44 & 0.632 & 0.783 & 0.678 & 0.920 & 0.610 \\
+RF & ROS & 44 & 0.680 & 0.812 & 0.744 & 0.922 & 0.649 \\
+RF & SMOTE & 44 & 0.695 & 0.833 & 0.789 & 0.922 & 0.656 \\
+RF & ADASYN & 41 & 0.657 & 0.816 & 0.764 & 0.918 & 0.613 \\
+RF & B-SMOTE1 & 37 & 0.662 & 0.805 & 0.737 & 0.914 & 0.620 \\
+RF & B-SMOTE2 & 37 & 0.649 & 0.802 & 0.734 & 0.910 & 0.606 \\
+RF & MWMOTE & 44 & 0.674 & 0.813 & 0.747 & 0.921 & 0.639 \\
+RF & G-SMOTE & 44 & 0.693 & 0.827 & 0.769 & 0.926 & 0.657 \\
+RF & K-Means SMOTE & 29 & 0.807 & 0.873 & 0.858 & 0.946 & 0.764 \\
+RF & BND & 44 & 0.693 & 0.830 & 0.779 & 0.926 & 0.654 \\
+\end{longtable}
+\endgroup

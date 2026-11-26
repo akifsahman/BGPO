@@ -1,0 +1,98 @@
+{
+  "dataset": "glass-0-1-6_vs_2",
+  "fold": 5,
+  "budget": 126,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 126,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.000773875042796135
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 126,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0008154578972607851
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 126,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.005538666853681207
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 126,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.000916625140234828
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 126,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 126,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 126,
+      "duplicate_excess": 57
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 126,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 378,
+      "duplicate_excess": 11
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 378,
+      "duplicate_excess": 10
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 378,
+      "duplicate_excess": 15
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 378,
+      "duplicate_excess": 13
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 504,
+      "duplicate_excess": 17
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

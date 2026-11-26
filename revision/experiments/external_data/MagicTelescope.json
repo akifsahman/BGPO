@@ -1,0 +1,31 @@
+{
+  "requested_name": "MagicTelescope",
+  "openml_data_id": 1120,
+  "openml_source_name": "MagicTelescope",
+  "openml_version": "1",
+  "source_url": "https://www.openml.org/d/1120",
+  "sha256_csv": "4f683e97f603ede6503c199a09c89a966105e8c606652df876f43bcb1b6b30ab",
+  "observations": 19020,
+  "numeric_features": 10,
+  "excluded_all_nonnumeric_columns": [],
+  "original_target_counts": {
+    "g": 12332,
+    "h": 6688
+  },
+  "minority_original_label": "h",
+  "minority_count": 6688,
+  "majority_count": 12332,
+  "missing_feature_cells": 0,
+  "feature_names": [
+    "fLength:",
+    "fWidth:",
+    "fSize:",
+    "fConc:",
+    "fConc1:",
+    "fAsym:",
+    "fM3Long:",
+    "fM3Trans:",
+    "fAlpha:",
+    "fDist:"
+  ]
+}

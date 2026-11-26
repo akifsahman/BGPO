@@ -1,0 +1,53 @@
+{
+  "dataset": "seismic-bumps",
+  "fold": 1,
+  "source_sha256": "79bda068dbc7a0c973790acb196df548ec18ec5aa7844e71da9b2c8b6e32a84a",
+  "choices_saved_before_outer_test": true,
+  "decision_seconds": 5.3295866248663515,
+  "outer_budget": 1795,
+  "outer_pool_size": 7180,
+  "outer_generators": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 1795,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0023655828554183245
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 1795,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0035551670007407665
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 1795,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.14890816598199308
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 1795,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.001062291907146573
+    }
+  }
+}

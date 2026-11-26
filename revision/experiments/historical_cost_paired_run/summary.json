@@ -1,0 +1,12 @@
+{
+  "design": "same-process paired wall time; 220 folds, 3 repeats, alternating order; generation and selection only",
+  "n_folds": 220,
+  "n_calls": 1320,
+  "median_smote_seconds": 0.000830666976980865,
+  "median_historical_BND_seconds": 0.03000639542005956,
+  "median_paired_difference_seconds": 0.029165894957259297,
+  "median_paired_ratio": 38.22734789955369,
+  "BND_slower_folds": 220,
+  "BND_faster_folds": 0,
+  "limitations": "Single machine and current Python environment; no classifier fit or memory measurement; results are descriptive."
+}

@@ -1,0 +1,98 @@
+{
+  "dataset": "glass0",
+  "fold": 5,
+  "budget": 60,
+  "generator_report": {
+    "SMOTE": {
+      "status": "ok",
+      "candidates": 60,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0006063750479370356
+    },
+    "ADASYN": {
+      "status": "ok",
+      "candidates": 60,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0008741249330341816
+    },
+    "MWMOTE": {
+      "status": "ok",
+      "candidates": 60,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "k1": 5,
+        "k2": 5,
+        "k3": 5
+      },
+      "seconds": 0.018929417012259364
+    },
+    "G_SMOTE": {
+      "status": "ok",
+      "candidates": 60,
+      "parameters": {
+        "proportion": 1.0,
+        "random_state": 42,
+        "n_neighbors": 5
+      },
+      "seconds": 0.0010134167969226837
+    }
+  },
+  "pools": {
+    "ONLY_SMOTE": {
+      "status": "ok",
+      "size": 60,
+      "duplicate_excess": 0
+    },
+    "ONLY_ADASYN": {
+      "status": "ok",
+      "size": 60,
+      "duplicate_excess": 0
+    },
+    "ONLY_MWMOTE": {
+      "status": "ok",
+      "size": 60,
+      "duplicate_excess": 0
+    },
+    "ONLY_G_SMOTE": {
+      "status": "ok",
+      "size": 60,
+      "duplicate_excess": 0
+    },
+    "DROP_SMOTE": {
+      "status": "ok",
+      "size": 180,
+      "duplicate_excess": 1
+    },
+    "DROP_ADASYN": {
+      "status": "ok",
+      "size": 180,
+      "duplicate_excess": 3
+    },
+    "DROP_MWMOTE": {
+      "status": "ok",
+      "size": 180,
+      "duplicate_excess": 1
+    },
+    "DROP_G_SMOTE": {
+      "status": "ok",
+      "size": 180,
+      "duplicate_excess": 0
+    },
+    "FULL": {
+      "status": "ok",
+      "size": 240,
+      "duplicate_excess": 4
+    }
+  },
+  "historical_full_reference_match": true,
+  "canonical_smote_RF_reference_match": true
+}

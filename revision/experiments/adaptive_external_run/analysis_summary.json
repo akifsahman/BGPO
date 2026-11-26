@@ -1,0 +1,126 @@
+{
+  "status": "four metadata-fixed, previously unscored sources; descriptive transfer check",
+  "sources": 4,
+  "outer_folds": 20,
+  "adaptive_classifier_folds": 60,
+  "choices": {
+    "SMOTE": 24,
+    "HIST_DIV": 19,
+    "HIST_BND": 17
+  },
+  "median_inner_decision_seconds_per_outer_fold": 12.712608708417974,
+  "primary_GMean_vs_SMOTE_by_source_classifier": [
+    {
+      "dataset": "ozone-level-8hr",
+      "classifier": "SVM_RBF",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.7949492753096317,
+      "comparator_value": 0.7985281856253083,
+      "difference": -0.0035789103156765867
+    },
+    {
+      "dataset": "ozone-level-8hr",
+      "classifier": "KNN",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.8020612227708334,
+      "comparator_value": 0.8186996808007783,
+      "difference": -0.016638458029944903
+    },
+    {
+      "dataset": "ozone-level-8hr",
+      "classifier": "RandomForest",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.6621344110192745,
+      "comparator_value": 0.6717055972903251,
+      "difference": -0.00957118627105058
+    },
+    {
+      "dataset": "phoneme",
+      "classifier": "SVM_RBF",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.8344067398525814,
+      "comparator_value": 0.8365587152703942,
+      "difference": -0.002151975417812757
+    },
+    {
+      "dataset": "phoneme",
+      "classifier": "KNN",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.8690916746084465,
+      "comparator_value": 0.8694539597663274,
+      "difference": -0.0003622851578809483
+    },
+    {
+      "dataset": "phoneme",
+      "classifier": "RandomForest",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.896612716205266,
+      "comparator_value": 0.8958246409260499,
+      "difference": 0.0007880752792160939
+    },
+    {
+      "dataset": "musk",
+      "classifier": "SVM_RBF",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.9815505775840261,
+      "comparator_value": 0.9754172589531797,
+      "difference": 0.006133318630846429
+    },
+    {
+      "dataset": "musk",
+      "classifier": "KNN",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.9214815936541207,
+      "comparator_value": 0.9234386491662884,
+      "difference": -0.001957055512167627
+    },
+    {
+      "dataset": "musk",
+      "classifier": "RandomForest",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.946727730525582,
+      "comparator_value": 0.9493267595737794,
+      "difference": -0.002599029048197421
+    },
+    {
+      "dataset": "seismic-bumps",
+      "classifier": "SVM_RBF",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.6388692585979074,
+      "comparator_value": 0.6327963070609687,
+      "difference": 0.006072951536938764
+    },
+    {
+      "dataset": "seismic-bumps",
+      "classifier": "KNN",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.5935315842494024,
+      "comparator_value": 0.5878843635941982,
+      "difference": 0.005647220655204288
+    },
+    {
+      "dataset": "seismic-bumps",
+      "classifier": "RandomForest",
+      "metric": "GMean",
+      "comparator": "SMOTE",
+      "adaptive": 0.48373243363171425,
+      "comparator_value": 0.49708911250293025,
+      "difference": -0.013356678871215999
+    }
+  ],
+  "primary_mean_difference_over_12_blocks": -0.002631167710145104,
+  "primary_wins": 4,
+  "primary_ties": 0,
+  "primary_losses": 8
+}

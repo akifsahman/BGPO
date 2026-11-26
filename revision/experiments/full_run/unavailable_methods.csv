@@ -1,0 +1,5 @@
+method,status,affected_folds,affected_datasets
+ADASYN,count_mismatch,3,3
+Borderline_SMOTE1,count_mismatch,21,7
+Borderline_SMOTE2,count_mismatch,21,7
+kmeans_SMOTE,count_mismatch,56,15

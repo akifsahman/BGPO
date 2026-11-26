@@ -1,0 +1,26 @@
+{
+  "fold_rows": 225,
+  "successful_rows": 225,
+  "all_method_blocks_five_folds": true,
+  "primary_difference_by_classifier": {
+    "KNN": {
+      "mean_across_three_sources": 0.009266218081563435,
+      "sources_improved": 3,
+      "sources_worse": 0,
+      "sources_tied": 0
+    },
+    "RandomForest": {
+      "mean_across_three_sources": 0.001347763630634306,
+      "sources_improved": 2,
+      "sources_worse": 1,
+      "sources_tied": 0
+    },
+    "SVM_RBF": {
+      "mean_across_three_sources": 0.016330815106880874,
+      "sources_improved": 3,
+      "sources_worse": 0,
+      "sources_tied": 0
+    }
+  },
+  "caution": "Three sources; descriptive only, no significance tests or broad superiority claim."
+}

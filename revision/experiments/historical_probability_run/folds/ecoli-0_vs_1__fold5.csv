@@ -1,0 +1,4 @@
+dataset,fold,method,classifier,status,budget,pool_size,F1,BalancedAccuracy,GMean,ROC_AUC,MCC,fit_seconds
+ecoli-0_vs_1,5,HIST_PROB_BND,SVM_RBF,ok,54,216,1.0,1.0,1.0,1.0,1.0,0.00048662489280104637
+ecoli-0_vs_1,5,HIST_PROB_BND,KNN,ok,54,216,1.0,1.0,1.0,1.0,1.0,0.00014879205264151096
+ecoli-0_vs_1,5,HIST_PROB_BND,RandomForest,ok,54,216,1.0,1.0,1.0,1.0,1.0,0.0400030838791281
