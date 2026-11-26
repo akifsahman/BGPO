@@ -12323,8 +12323,8 @@
     },
     {
       "path": "verify_package.py",
-      "bytes": 3326,
-      "sha256": "e7eef16ed01f991b6ad139ddfe5fe98524c981da083b4a3994a6c1887333afdb"
+      "bytes": 3366,
+      "sha256": "0d4bed3cc87fc95db83798ed26029c3d2ab2e8553c96bc5a2b363aae8596360e"
     }
   ]
 }
